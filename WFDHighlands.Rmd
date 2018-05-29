@@ -7,8 +7,25 @@ output:
   html_notebook: default
 ---
 
-White -faced darter distribution in the Scottish Highlands
-===========================================================
+---
+title: White -faced darter distribution in the Scottish Highlands
+author: "Matthew Geary & Achaz von Hardenberg"
+date: "2018"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE)
+library(unmarked)
+library(raster)
+```
+
+
+## Abstract
+
+
 
 
 Introduction
@@ -40,16 +57,165 @@ White-faced darter presence records between 2000 and 2015 were obtained from the
 ~Importance of using information from both Exuvia and adults~
 White-faced darter, and dragonflies more generally, spend the majority of their lifespans as larvae and only existas breeding adults for a short period of time (REF). Habitat preference therefore, involves two separate processes, firstly that females select habitat which they percieve to be suitable for oviposition and secondly, that the habitat selected is truly suitable for larvae to survive to adulthood. Indeed, this problem and the implications it presents for surveying dragonfly species has been noted in the literature with XXXX (REF) suggesting that only records of exuvia can demonstrate successful breeding and therefore more fully represent the population. However, exuvia counts can be difficult both in terms of logistics (REF) and detectability (REF) and may not fully represent the movements and habitat preferences of adult dragonflies (REF). We chose to use data from both of these sources along with data from larval surveys. As exuvia counts were much rarer for this species than counts from adult transects (XXX conpared with XXXX) our method integrates models of exuvia and adult occupancy.
 
+```{r pres}
+## Read in data
+WFD.occu.mat <- read.csv("Data/WFDHighland_wide_UMF_FULL.csv")[,2:17]
+```
+
+
 ##Environmental variables
 
 Environmental variables used to predict occupancy of White-faced darter were downloaded from the EUNIS land-cover classification for Scotland (SOURCE AND LICENCE). We used established EUNIS classes for HAB, HAB and HAB to produce variables representing HAB VARIABLES LIST.
 
+```{r envVars}
+# Read in site and observation covariates
+WFD.siteCovs <- read.csv("Data/EnvVars_FULL.csv")
+
+## Identify rows with NA values - these are outside of the Scottish mainland
+NA.vals <- which(is.na(WFD.siteCovs$AWI))
+NA.vals <- append(NA.vals, which(is.na(WFD.siteCovs$pet_emerge)))
+NA.vals <- append(NA.vals, which(is.na(WFD.siteCovs$wildness)))
+NA.vals <- append(NA.vals, which(is.na(WFD.siteCovs$peat)))
+
+WFD.occu.mat <- WFD.occu.mat[-c(NA.vals),]
+WFD.siteCovs <- WFD.siteCovs[-c(NA.vals),]
+
+## Create observation covariates list
+WFD.obsCov <- list('AWI' = WFD.siteCovs$AWI, wildness = WFD.siteCovs$wildness)
+
+## Combine conifer/pine and bog/mire/bogwoodland
+WFD.siteCovs$coniferpine <- WFD.siteCovs$conifer + WFD.siteCovs$pineforest
+WFD.siteCovs$wet <- WFD.siteCovs$bogs + WFD.siteCovs$bogwoodland + WFD.siteCovs$mire
+
+# Create Unmarked data frame
+WFD.UMF <- unmarkedFrameOccu(y = WFD.occu.mat, siteCovs = WFD.siteCovs)
+
+# Scale and centre siteCovs
+siteCovs(WFD.UMF) <- scale(siteCovs(WFD.UMF))
+sC.scale <- scale(siteCovs(WFD.UMF))
+```
+
 ##Occupancy model
+
+
+```{r occupancy}
+### Candidate models obsCovs
+WFD.occu.1 <- occu(~1 ~1, WFD.UMF)
+WFD.occu.2 <- occu(~1~ pineforest*wet + pet_emerge, WFD.UMF)
+WFD.occu.3 <- occu(~1 ~pineforest + pet_emerge + bogs, WFD.UMF)
+WFD.occu.4 <- occu(~1 ~pineforest + pet_emerge + wet, WFD.UMF)
+WFD.occu.5 <- occu(~1 ~pineforest + bogs, WFD.UMF)
+WFD.occu.6 <- occu(~1 ~pineforest + wet, WFD.UMF)
+WFD.occu.7 <- occu(~1 ~pineforest + pet_emerge, WFD.UMF)
+WFD.occu.8 <- occu(~1 ~pineforest*pet_emerge + wet, WFD.UMF)
+WFD.occu.9 <- occu(~1 ~pineforest*pet_emerge + bogs, WFD.UMF)
+WFD.occu.10 <- occu(~1 ~pineforest*pet_emerge, WFD.UMF)
+WFD.occu.11 <- occu(~1 ~pineforest*wet, WFD.UMF)
+WFD.occu.12 <- occu(~1 ~pineforest*bogs, WFD.UMF)
+WFD.occu.13 <- occu(~1 ~pineforest, WFD.UMF)
+WFD.occu.14 <- occu(~1 ~coniferpine + pet_emerge + wet, WFD.UMF)
+WFD.occu.15 <- occu(~1 ~coniferpine*wet + pet_emerge, WFD.UMF)
+WFD.occu.16 <- occu(~1 ~coniferpine*bogs + pet_emerge, WFD.UMF)
+
+WFD.obs.fits <- fitList(WFD.occu.5, WFD.occu.6, WFD.occu.7, WFD.occu.8, WFD.occu.9, WFD.occu.10, WFD.occu.11, WFD.occu.12, WFD.occu.13, WFD.occu.14, WFD.occu.15, WFD.occu.16)
+WFD.modSel <- modSel(WFD.obs.fits)
+```
 
 Results
 --------
 
 ## Model
+
+```{r modSel}
+#### Need to prettify...
+print(WFD.modSel)
+```
+
+```{r fig1}
+layout(matrix(c(1,2,3,3), 2, 2, byrow = TRUE))
+new.dat<- data.frame(pineforest=0,wet=seq(-0.49035 ,4.65173,,50))
+WFD.occu.11.pred <-predict(WFD.occu.11,type="state",newdata=new.dat,appendData=TRUE)
+head(WFD.occu.11.pred)
+wet.mean<- attr(siteCovs(WFD.UMF)$wet,"scaled:center")
+wet.sd <- attr(siteCovs(WFD.UMF)$wet,"scaled:scale")
+WFD.occu.11.pred$wet <- WFD.occu.11.pred$wet*sd(WFD.siteCovs$wet)+mean(WFD.siteCovs$wet)
+plot(Predicted ~ wet, WFD.occu.11.pred,type="l",xlab="Proportion of bog and mire per 0.012 square km",
+     ylab="Probability of Occupancy",ylim=c(0,1), lwd = 3, cex.lab = 1.3, cex.axis = 1.2)
+lines(lower ~ wet, WFD.occu.11.pred,type="l",col="red", lty= 2)
+lines(upper ~ wet, WFD.occu.11.pred,type="l",col="red", lty = 2)
+
+new.dat<- data.frame(pineforest=seq(-0.5562 ,4.0627 ,,50),wet=0)
+WFD.occu.11.pred <-predict(WFD.occu.11,type="state",newdata=new.dat,appendData=TRUE)
+head(WFD.occu.11.pred)
+WFD.occu.11.pred$pineforest <- WFD.occu.11.pred$pineforest*sd(WFD.siteCovs$pineforest)+mean(WFD.siteCovs$pineforest)
+plot(Predicted ~ pineforest, WFD.occu.11.pred,type="l",xlab="Proportion of pine forest per 0.012 square km",
+     ylab="Probability of Occupancy",ylim=c(0,1), lwd = 3, cex.lab = 1.3, cex.axis = 1.2)
+lines(lower ~ pineforest, WFD.occu.11.pred,type="l",col="red", lty= 2)
+lines(upper ~ pineforest, WFD.occu.11.pred,type="l",col="red", lty= 2)
+
+new.dat<- data.frame(pineforest=seq(-0.5562 ,4.0627 ,,50),wet=-0.49035)
+WFD.occu.11.pred <-predict(WFD.occu.11,type="state",newdata=new.dat,appendData=TRUE)
+pred.wet <- data.frame(q1 = WFD.occu.11.pred$Predicted)
+new.dat<- data.frame(pineforest=seq(-0.5562 ,4.0627 ,,50),wet=-4.65173)
+WFD.occu.11.pred <-predict(WFD.occu.11,type="state",newdata=new.dat,appendData=TRUE)
+pred.wet$q3 <- WFD.occu.11.pred$Predicted
+new.dat<- data.frame(pineforest=seq(-0.5562 ,4.0627 ,,50),wet=-0)
+WFD.occu.11.pred <-predict(WFD.occu.11,type="state",newdata=new.dat,appendData=TRUE)
+WFD.occu.11.pred$pineforest <- WFD.occu.11.pred$pineforest*sd(WFD.siteCovs$pineforest)+mean(WFD.siteCovs$pineforest)
+pred.wet$med <- WFD.occu.11.pred$Predicted
+plot(pred.wet$med ~ WFD.occu.11.pred$pineforest, type="l",xlab="Proportion of pine forest per 0.012 square km",
+     ylab="Probability of Occupancy",ylim=c(0,1), lwd = 3, cex.lab = 1.3, cex.axis = 1.2)
+
+lines(pred.wet$q1 ~ WFD.occu.11.pred$pineforest,type="l",col="brown", lwd = 2)
+lines(pred.wet$q3 ~ WFD.occu.11.pred$pineforest,type="l",col="blue", lwd = 2)
+legend('topleft', col = c('black', 'brown', 'blue'), lwd = 3, legend = c("Mean", "Minimum", "Maximum"))
+
+new.dat<- data.frame(pineforest=-0.5562, wet = seq(-0.49035 ,4.65173,,50))
+WFD.occu.11.pred <-predict(WFD.occu.11,type="state",newdata=new.dat,appendData=TRUE)
+pred.wet <- data.frame(q1 = WFD.occu.11.pred$Predicted)
+new.dat<- data.frame(pineforest=4.0627, wet = seq(-0.49035 ,4.65173,,50))
+WFD.occu.11.pred <-predict(WFD.occu.11,type="state",newdata=new.dat,appendData=TRUE)
+pred.wet$q3 <- WFD.occu.11.pred$Predicted
+new.dat<- data.frame(pineforest=0, wet = seq(-0.49035 ,4.65173,,50))
+WFD.occu.11.pred <-predict(WFD.occu.11,type="state",newdata=new.dat,appendData=TRUE)
+WFD.occu.11.pred$wet <- WFD.occu.11.pred$wet*sd(WFD.siteCovs$wet)+mean(WFD.siteCovs$wet)
+pred.wet$med <- WFD.occu.11.pred$Predicted
+plot(WFD.occu.11.pred$Predicted ~ WFD.occu.11.pred$wet, type="l",xlab="Proportion of bog and mire per 0.012 square km",
+     ylab="Probability of Occupancy",ylim=c(0,1), lwd = 3, cex.lab = 1.3, cex.axis = 1.2)
+lines(pred.wet$q1 ~ WFD.occu.11.pred$wet,type="l",col="brown", lwd = 2)
+lines(pred.wet$q3 ~ WFD.occu.11.pred$wet,type="l",col="blue", lwd = 2)
+legend('right', col = c('black', 'brown', 'blue'), lwd = 3, legend = c("Mean", "Minimum", "Maximum"), title= "Pine forest")
+```
+
+## Model validation
+
+```{r modVal}
+
+```
+
+
+## Predicted distribution
+
+```{r predMap}
+### Load Scottish GIS Data
+bogs <- raster('Data/GIS Data/EnvVars_pred/bogs.img')
+bogwoodland <- raster('Data/GIS Data/EnvVars_pred/bogwoodland.img')
+mire <- raster('Data/GIS Data/EnvVars_pred/mire.img')
+pineforest <- raster('Data/GIS Data/EnvVars_pred/pineforest.img')
+
+### Create 'wet' variable
+wet <- bogs + mire + bogwoodland
+# EnvVars.pred <- stack(pineforest, wet)
+# names(EnvVars.pred) <- c("pineforest", "wet")
+EnvVars.pred <- stack(pineforest, wet)
+names(EnvVars.pred) <- c("pineforest", "wet")
+
+
+### Try projection of peat and forest model
+WFD.map.pred <- predict(WFD.occu.11, type = "state", newdata = EnvVars.pred, appendData = TRUE)
+
+plot(WFD.map.pred)
+```
 
 Discussion
 ------------
