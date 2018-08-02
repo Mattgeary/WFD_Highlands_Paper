@@ -20,6 +20,7 @@ output:
 knitr::opts_chunk$set(echo = FALSE, message = FALSE)
 library(unmarked)
 library(raster)
+library(AICcmodavg)
 ```
 
 
@@ -46,18 +47,18 @@ The multi-stage life-cycle of odonata species leaves them vulerable to threats i
 * WFD Habitat
 White-faced darter (_Leucorhinnia dubia_) are a lowland bog specialist dragonfly species [REF]. In great Britain their distribution is heavily biased towards the Scottish highlands [REF]. There are several populations further south, in England, which have been the focus of conservation attention, including reintroduction programmes [REF].In Scotland their distribution stretches from Galloway in the South to Ross-shire in the North although the bulk of the population is found in the North on both sides of the Great Glen Fault. In the east they are found in parts of the Cairngorms and Grampians and they can be found on the West coast although they do not reach as far as the inner hebrides [REF].  The Scottish populations are thought to be declining but currently recieve little conservation intervention [REF?]. The species is well monitored in some areas but their patchy distributions across a large landscape means that the species is thought to be underrecorded [REF]. White-faced darter habitat is well described in current ID guides and atlases although the evidence base for this is currently largely anecdotal or based on localised populations in England [REF]. As with many dragonfly species they have not been the subject of quantitative studies regarding habitat associations except at the very local scale [REF - BDS paper]. White-faced darter are generally found in acidic pools associated with pine or birch woodland [REF]. These pools may form part of pool complexes and it is not unusual for new sites to be located both close to current ones and at larger distances [REF]. They have a particularly strong association with Sphagnum moss [REF] and it is thought that well developed Sphagnum is an essential requirement for White-faced darter larval habitat [REF]. 
 
-### Using SDMs and occupancy for conservation prioritization and survey locations
+### Using SDMs and occupancy for conservation prioritisation and survey locations
 
-Understanding species distributions is useful for the planning of future surveys [REF] and identifying priority areas for conservation action [REF]. As well as being useful for species which are poorly known [REF], or inhabit remote locations [REF] so their populations cannot be effectively monitored there are also species which are well know locally but poorly known over wider areas [REF]. Monitoring projects for various taxa have shown that biases can occur regarding the distribution of moinitoring effort or species records [REF]. This can be a particular problem for understudied taxa where expertise may be localised or restricted to only a few individuals [REF]. Where species are monitored sporadically [REF], through only incidental sightings [REF] or are extremely rare [REF] we might only have access to presence records for a species. Similarly, where taxa are monitored using volunteer recording schemes thereis a trade-off between the information content of the data and the ease with which volunteers can complete records in the field [REF]. More complex surveys which result in information-rich data require more experienced/trained recorders and can limit the geopgraphic coverage of the survey [REF]. On the other hand, simpler more widespread surveys can introduce issues with data quality due to inexperienced observers or patch records [REF]. Information-linited data restrict the methods available to investigate species distributions [REF] and can make it hard to project models onto unknown or underrecorded areas [REF]. In particular, this is a problem because, although species presence can be established, there are likely to be few or low quality records of species absence [REF]. For other species, however, more comprehensive monitoring programmes exist and this allows methods which can incorporate uncertainty of absence and produce more robust estimates of species occupancy across a landscape [REF]. 
+Understanding species distributions is useful for the planning of future surveys [REF] and identifying priority areas for conservation action [REF]. As well as being useful for species which are poorly known [REF], or inhabit remote locations [REF] so their populations cannot be effectively monitored there are also species which are well know locally but poorly known over wider areas [REF]. Monitoring projects for various taxa have shown that biases can occur regarding the distribution of moinitoring effort or species records [REF]. This can be a particular problem for understudied taxa where expertise may be localised or restricted to only a few individuals [REF]. Where species are monitored sporadically [REF], through only incidental sightings [REF] or are extremely rare [REF] we might only have access to presence records for a species. Similarly, where taxa are monitored using volunteer recording schemes there is a trade-off between the information content of the data and the ease with which volunteers can complete records in the field [REF]. More complex surveys which result in information-rich data require more experienced/trained recorders and can limit the geopgraphic coverage of the survey [REF]. On the other hand, simpler more widespread surveys can introduce issues with data quality due to inexperienced observers or patch records [REF]. Information-linited data restrict the methods available to investigate species distributions [REF] and can make it hard to project models onto unknown or underrecorded areas [REF]. In particular, this is a problem because, although species presence can be established, there are likely to be few or low quality records of species absence [REF]. For other species, however, more comprehensive monitoring programmes exist and this allows methods which can incorporate uncertainty of absence and produce more robust estimates of species occupancy across a landscape [REF]. 
 
 ### Importance of incorporating imperfect detection
 
-Issues regarding imperfect detection of species in the field are well established in the literature [REF]. Where species are rare, localised or survey coverage is spatially or temporally patchy the inability to detect absence of a species is particulary problematic. However, using data from long-term recording schemes or those involving large numbers of volunteers provides the opportunity for repeat visits to a site even if this was not originally part of the survey design [REF]. We can also infer absence from detailed recordings from experienced observers who regularly record complete lists, records of all species which are present at a site [REF]. Recent advances in occupancy modelling have established that surrogate species can be used to infer absence under some recording schemes. EXAMPLE REF. These advances provide an opportunity to increase the value of data from widepsread recording shcemes [REF], 'presence only' datasets [REF] and for neglected taxa where recording is sparse [REF].
+Issues regarding imperfect detection of species in the field are well established in the literature [REF]. Where species are rare, localised or survey coverage is spatially or temporally patchy the inability to detect absence of a species is particularly problematic. However, using data from long-term recording schemes or those involving large numbers of volunteers provides the opportunity for repeat visits to a site even if this was not originally part of the survey design [REF]. We can also infer absence from detailed recordings from experienced observers who regularly record complete lists, records of all species which are present at a site [REF]. Recent advances in occupancy modelling have established that surrogate species can be used to infer absence under some recording schemes. EXAMPLE REF. These advances provide an opportunity to increase the value of data from widespread recording schemes [REF], 'presence only' datasets [REF] and for neglected taxa where recording is sparse [REF].
 
 * Occupancy models for insects
 * Useful for dragonflies
 
-Although models using an occupancy fromework are now relatively common in the vertebrate literature and are now used to determine species distributions [REF] and estimate population sizes [REF]. They are not currently widely used in the invertebrate literature. However, as invertebrate populations can be hard to detect [REF], relatively mobile on small scales [REF] and may be irruptive [REF]. Occupancy models provide a useful tool to account for some of the variability in the probability of records or counts of invertebrate species. While there is some disagreement on the most effective way to survey dragonflies [REF - dragonfly delusion papers] both of the methods suggested by [REF] and [REF] would benefit from incorporating ideas surrounding imperfect detection into their analyses. The detectability of adult dragonflies can differ across habitats [REF - BDS paper] and can be dependent on weather conditions [REF]. Exuvia, on the other hand can be well hidden amongst vegetation [REF] and can be easily disloged in inclement weather [REF]. In both cases false absence records [REF] could influence inferences based on survey data [REF]. Occupancy models have been used to demonstrate methodological improvements using Odonata as model species [REF] and the analyse population trends [REF] but have not yet been used to analyse species distributions using dragonfly species. Here we use an occupancy model [REF] to investigate White-faced darter distribution in the Scottish Highlands, UK in relation to large-scale habitat variables using use data froma large scale citizen-science recording scheme. 
+Although models using an occupancy framework are now relatively common in the vertebrate literature and are now used to determine species distributions [REF] and estimate population sizes [REF]. They are not currently widely used in the invertebrate literature. However, as invertebrate populations can be hard to detect [REF], relatively mobile on small scales [REF] and may be irruptive [REF]. Occupancy models provide a useful tool to account for some of the variability in the probability of records or counts of invertebrate species. While there is some disagreement on the most effective way to survey dragonflies [REF - dragonfly delusion papers] both of the methods suggested by [REF] and [REF] would benefit from incorporating ideas surrounding imperfect detection into their analyses. The detectability of adult dragonflies can differ across habitats [REF - BDS paper] and can be dependent on weather conditions [REF]. Exuvia, on the other hand can be well hidden amongst vegetation [REF] and can be easily disloged in inclement weather [REF]. In both cases false absence records [REF] could influence inferences based on survey data [REF]. Occupancy models have been used to demonstrate methodological improvements using Odonata as model species [REF] and the analyse population trends [REF] but have not yet been used to analyse species distributions using dragonfly species. Here we use an occupancy model [REF] to investigate White-faced darter distribution in the Scottish Highlands, UK in relation to large-scale habitat variables using use data froma large scale citizen-science recording scheme. 
 
 
 <!--Can we add something on White faced darter distribution in Scotland? is there any paper done in this before or can we claim that we are the first to model the distribution in Scotland?. What about other dragonflies in Scotland and their conservation? I think there is enough on the issue of imperfect detection, but we have to put more biological and conservation background maybe -->
@@ -78,6 +79,8 @@ White-faced darter presence records between 2000 and 2015 were obtained from the
 ~Importance of using information from both Exuvia and adults~
 White-faced darter, and dragonflies more generally, spend the majority of their lifespans as larvae and only exist as breeding adults for a short period of time [REF]. Habitat preference therefore, involves two separate processes, firstly that females select habitat which they percieve to be suitable for oviposition and secondly, that the habitat selected is truly suitable for larvae to survive to adulthood. Indeed, this problem and the implications it presents for surveying dragonfly species has been noted in the literature with XXXX [REF] suggesting that only records of exuvia can demonstrate successful breeding and therefore more fully represent the population. However, exuvia counts can be difficult both in terms of logistics [REF] and detectability [REF] and may not fully represent the movements and habitat preferences of adult dragonflies [REF]. We chose to use data from both of these sources along with data from larval surveys. As exuvia counts were much rarer for this species than counts from adult transects (XXX compared with XXXX) our method integrates models of exuvia and adult occupancy.
 <!------------- I'm not sure thsi is right anymore. We don't integrate them do we? We just use data from both? ---->
+
+
 ```{r pres}
 ## Read in data
 WFD.occu.mat <- read.csv("Data/WFDHighland_wide_UMF_FULL.csv")[,2:17]
@@ -86,7 +89,8 @@ WFD.occu.mat <- read.csv("Data/WFDHighland_wide_UMF_FULL.csv")[,2:17]
 
 ##Environmental variables
 <!--------------- Matt to finish this section ------------>
-Environmental variables used to predict occupancy of White-faced darter were downloaded from the EUNIS land-cover classification for Scotland (SOURCE AND LICENCE). We used established EUNIS classes for HAB, HAB and HAB to produce variables representing HAB VARIABLES LIST.
+Environmental variables used to predict occupancy of White-faced darter were downloaded from the EUNIS land-cover classification for Scotland (SOURCE AND LICENCE). The variables chosen were based on those described in the UK [REF] and European [REF] dragonfly atlases which specify wet, boggy areas within a woodland complex [REF]. We used established EUNIS classes [REF] to produce variables representing pineforest, coniferous forest and 'wet' landscapes (bogs, blanket bog, bog woodland, fens and mires). <!------------------- Need to check these variables -------------> Othe rpotential variables such as mixed woodland or ancient woodland measures from toehr sources were not used in our analyses due to issues with collinearity. Instead we retained onyl the variables which we considered to have the strongest ecological connection with White-faced darter distribution based on the avialable literature [REF]. We converted our environmental variables to proportional maps per 1km at a 10m resolution from the original 10m resolution categorical lancover maps using the raster package [REF - Hijmans] in R [REF - CRAN]. Additionally we used data from the CEH CHESS dataset [REF] to represent potential Evapotranspiration (PET) and several weather variables (wind speed, rainfall XXX)all of which were resampled to match the resolution of our lancover data using the raster package in R. However, weather variables used as observation covariates did not improve the fit of our occupancy models <!--------- This may need to come later --------->
+
 
 ```{r envVars}
 # Read in site and observation covariates
@@ -150,6 +154,21 @@ Results
 
 <!------------------ ACHAZ - add model results here ---------------->
 
+The model with the lowest AIC score used the proportion of pineforest within 1km and the proportion of 'wet' habitats within 1km as predictors with no covariates related to detectability. Other models with $ \Delta AIC > 5$ also tended to include poneofrest as a predictor either alone or in combination with coniferous forest and some degree fo wetness either represented by 'wet' habitat or potential evapotranspiration during the emergence period. However, no model had $ \Delta AIC < 2 $ so we retained only the 'best'model for further analyses. 
+
+A MacKenzie & Bailey [ref] goodness of fit test...
+
+```{r modVal}
+#### GOF test hangs at 28000 - no error just keeps going?!
+WFD.gof <- mb.gof.test(WFD.occu.11, nsim = 1000)
+WFD.gof
+
+```
+<!----------------------- Model results here ------------->
+
+
+
+
 ```{r modSel}
 #### Need to prettify...
 print(WFD.modSel)
@@ -211,13 +230,8 @@ lines(pred.wet$q3 ~ WFD.occu.11.pred$wet,type="l",col="blue", lwd = 2)
 legend('right', col = c('black', 'brown', 'blue'), lwd = 3, legend = c("Mean", "Minimum", "Maximum"), title= "Pine forest")
 ```
 
-## Model validation
 
-<!------------------ ACHAZ - did we do this? We should. How? ---------------->
 
-```{r modVal}
-
-```
 
 
 ## Predicted distribution
@@ -255,7 +269,7 @@ Our models suggest that the strongest drivers of White-faced darter distribution
 ## Areas for survey or protection
 hotspots
 
-Despite these limitations we suggest that the predictions of our model can be useful in conservation planning for White-faced darter. They successfully predict several important locations which are currently known along with strong predicitons in areas that are under recorded or have not been surveyed. 
+Despite these limitations we suggest that the predictions of our model can be useful in conservation planning for White-faced darter. They successfully predict several important locations which are currently known along with strong predictions in areas that are under recorded or have not been surveyed. 
 
 ## Model evaluation
 scale
@@ -263,7 +277,13 @@ survey bias
 
 ## Use of method and surrogate species
 
+One aspect of our modelling  approach which is relatively novel is the use of a surrogate species to imply 'absence' records. Species monitoring programmes do not always require absence records as a matter of course, however, several schemes use complete lists to record species abosence [REF]. Our method is an extension of this approach in that we chose a widespread and highly detectable [REF] species whose presence records would provide information about visits to sites. In our case, as White-faced darter are relatively scare we could be confident thatthose recorders able to recognise Four-spotted chaser would be likely to submit records of WHite-faced darter were they to be present. However, our method is not without it's limitations. In this case our estimate of detectability is likely to be relative to our surrogate species rather than a true estimate of detectability for White-faced darter. Additionally our absence recrds are may be biased towards certain aquatic habitats and our predictions may be generous in some areas <!-------- Not the right phrase - can't think of the right one just now --------->
+
+In general, however, the use of occupancy models to investigate habitat suitability and population changes in Odonata is easily achievable with current recording data, providing data are available for suitable surrogate species. With a minor modification to current recording practices to encourage the use of complete lists (cf BirdTrack [REF]) more accurate estimates would be possible. 
+
 ## Conservation implications for WFD
+
+Our models are in agreement with the current management recommendations for thsi species [REF] and emphasise the importance of lowland peat pool complexes within woodland. Our models particularly identify pinewood and suggest that native pinewoods may be particulary important although current management pracitces also suggest that some broadleaved species would be equally beneficial [REF]. Indeed these species are usually those found in edge habitats as part of native caledonian pinewood [REF]. In terms of management, our models suggest that the mainatanance of pool complexes within woodland is the most important objective. Our models predict that where woowldand cover is high, the proportion of 'wet' habitat can be relatively small but without the forest cover even large areas of 'wet' habitat may not be suitable. This also suggest that White-faced darter are likely to be impacted by drainage as part of woodland managment and this should eb avoided where this species is present. This aslo adds support to current management operations as part of the White-faced darter reintroduction project in Delamere forest, England where areas are being re-wetted to provide more suitable habitat for the reintroduced population [REF - Meredith BDS].
 
 ## Potential future work
 other odonata
