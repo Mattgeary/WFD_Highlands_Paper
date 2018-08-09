@@ -293,4 +293,12 @@ other odonata
 Wide-scale monitoring and recording of odonata is still in its infancy compared to other taxa. Currently the distributions of many species, even in well recorded parts of the world, are known gepgraphically but the ecological drivers of those distributions are less well understood. Our model demonstrates that investigating the distributions is possible even with current monitoring data. Indeed a useful next step would be to extend this modelling approach to include further species of conservation concern. The Scottish highlands is home to several other Odonata species which, along with White-faced darter, are underrecorded and potentially threatened by land use change [REF]. Adapting the models used in our analysis to include multiple species could benefit conservation planning for Odonata by identifying 'hotspots' for these specialists. 
 
 Our models used all records of White-faced darter which included larval records, exuvia counts and adult sightings. These three different record types are likely to have different detectabilities [REF] and, in fact, represent different levels of information about White-faced darter populations. Not all locations where adults are seen are suitable for the full reproductive cycle of Odonata [REF] and records fo larvae or exuvia are required to truly demonstrate successful breeding [REF]. An extension of our method which could sue this information to make more accurate estimates of White-faced darter distributions would be to use mutli-stage models of occupancy [REF] which could use adult presence and confirmed breeding as seperate outcomes within the model. However, current recording of Odonata within the Socttish highalnds does not represent enough information to fully parameterise such a model. For this to be successful we would need to increase the number of repeat visists tosites and particular increase the number of repeats which sought larvae or exuvia rather than just adults [REF]. 
+
+# Changes in occupancy 
+
+# COnnectivity and population structure
+
+
+
+
 ## Conclusions
