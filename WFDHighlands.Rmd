@@ -242,6 +242,26 @@ legend('right', col = c('black', 'brown', 'blue'), lwd = 3, legend = c("Mean", "
 
 
 
+<<<<<<< Updated upstream
+=======
+```{r modVal}
+#We first need to create a function for performing a Chi-Square test
+auc <- function(fm) {
+umf <- getData(fm)
+y <- getY(umf)
+y[y>1] <- 1
+fv <- fitted(fm, na.rm=TRUE) 
+y[is.na(fv)] <- NA 
+mv <- wilcox.test(y,fv)
+auc <- as.numeric(mv$statistic) / (length(y) * length(fv))
+auc
+}
+pb <- parboot(WFD.occu.11, statistic=chisq, nsim=100, parallel=FALSE) 
+pb
+
+
+```
+>>>>>>> Stashed changes
 
 
 ## Predicted distribution
