@@ -132,7 +132,9 @@ sC.scale <- scale(siteCovs(WFD.UMF))
 
 <!------------------ ACHAZ - explain the model etc. here ---------------->
 
-<!------------- We don't currently try any observation covariates - I know these didn't help but I'm thinking we should test that here, too? I'm not sure our model selection was the most methodical in the end.-------------->
+<!------------- We don't currently try any observation covariates - I know these didn't help but I'm thinking we should test that here, too? I'm not sure our model selection was the most methodical in the end. 
+AvH 13/08: Try a dynamic model dividing in 5 years slots? 
+-------------->
 
 ```{r occupancy}
 ### Candidate models obsCovs
