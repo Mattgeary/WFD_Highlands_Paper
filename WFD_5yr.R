@@ -1,4 +1,6 @@
 #### Occupancy model using summarised occupancy matrix 5 yr, 5 yr, 6 yr (bit of a fudge). Seems to work better in some ways but the 'best' models don't converge
+#### Coariate effects in models differ widlly and model with 0 site covariates seems to do better than most
+#### This migt be the final straw for these models....
 
 ## Load libraries
 library(unmarked)
@@ -112,9 +114,11 @@ WFD.occu.11 <- occu(~wildness + wind + tas ~pineforest*wet, WFD.UMF)
 WFD.occu.12 <- occu(~wildness + wind + tas ~pineforest*bogs, WFD.UMF)
 WFD.occu.13 <- occu(~wildness + wind + tas ~pineforest, WFD.UMF)
 WFD.occu.14 <- occu(~wildness + wind + tas ~coniferpine + pet_emerge + wet, WFD.UMF)
-WFD.occu.15 <- occu(~wildness + wind + tas ~coniferpine*wet + pet_emerge, WFD.UMF)
-WFD.occu.16 <- occu(~wildness + wind + tas ~coniferpine*bogs + pet_emerge, WFD.UMF)
+## Models below don't converge
+# WFD.occu.15 <- occu(~wildness + wind + tas ~coniferpine*wet + pet_emerge, WFD.UMF)
+# WFD.occu.16 <- occu(~wildness + wind + tas ~coniferpine*bogs + pet_emerge, WFD.UMF)
 
-WFD.site.fits <- fitList(WFD.occu.1, WFD.occu.2, WFD.occu.3, WFD.occu.4, WFD.occu.5, WFD.occu.6, WFD.occu.7, WFD.occu.8, WFD.occu.9, WFD.occu.10, WFD.occu.11, WFD.occu.12, WFD.occu.13, WFD.occu.14, WFD.occu.15, WFD.occu.16)
+#WFD.site.fits <- fitList(WFD.occu.1, WFD.occu.2, WFD.occu.3, WFD.occu.4, WFD.occu.5, WFD.occu.6, WFD.occu.7, WFD.occu.8, WFD.occu.9, WFD.occu.10, WFD.occu.11, WFD.occu.12, WFD.occu.13, WFD.occu.14, WFD.occu.15, WFD.occu.16)
+WFD.site.fits <- fitList(WFD.occu.1, WFD.occu.2, WFD.occu.3, WFD.occu.4, WFD.occu.5, WFD.occu.6, WFD.occu.7, WFD.occu.8, WFD.occu.9, WFD.occu.10, WFD.occu.11, WFD.occu.12, WFD.occu.13, WFD.occu.14)
 WFD.modSel <- modSel(WFD.site.fits)
 WFD.modSel
