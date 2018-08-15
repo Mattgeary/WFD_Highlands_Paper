@@ -141,7 +141,7 @@ WFD.obsCov.wildness <- cbind(WFD.obsCov.wildness, as.data.frame(WFD.siteCovs$wil
 }
 
 ## Create observation covariates list
-WFD.obsCov <- list('AWI' = WFD.obsCov.AWI, 'wildness' = WFD.obsCov.wildness, 'wind' = WFD.obsCov.wind, 'tas' = WFD.obsCov.wind)
+WFD.obsCov <- list('AWI' = WFD.obsCov.AWI, 'wildness' = WFD.obsCov.wildness, 'wind' = WFD.obsCov.wind, 'tas' = WFD.obsCov.tas)
 
 ## Combine conifer/pine and bog/mire/bogwoodland
 WFD.siteCovs$coniferpine <- WFD.siteCovs$conifer + WFD.siteCovs$pineforest
@@ -193,28 +193,28 @@ WFD.modSel.obs
 
 
 ### Candidate models siteCovs
-WFD.occu.1 <- occu(~wildness + wind ~1, WFD.UMF)
-WFD.occu.2 <- occu(~wildness + wind~ pineforest*wet + pet_emerge, WFD.UMF)
-WFD.occu.3 <- occu(~wildness + wind ~pineforest + pet_emerge + bogs, WFD.UMF)
-WFD.occu.4 <- occu(~wildness + wind ~pineforest + pet_emerge + wet, WFD.UMF)
-WFD.occu.5 <- occu(~wildness + wind ~pineforest + bogs, WFD.UMF)
-WFD.occu.6 <- occu(~wildness + wind ~pineforest + wet, WFD.UMF)
-WFD.occu.7 <- occu(~wildness + wind ~pineforest + pet_emerge, WFD.UMF)
-WFD.occu.8 <- occu(~wildness + wind ~pineforest*pet_emerge + wet, WFD.UMF)
-WFD.occu.9 <- occu(~wildness + wind ~pineforest*pet_emerge + bogs, WFD.UMF)
-WFD.occu.10 <- occu(~wildness + wind ~pineforest*pet_emerge, WFD.UMF)
-WFD.occu.11 <- occu(~wildness + wind ~pineforest*wet, WFD.UMF)
-WFD.occu.12 <- occu(~wildness + wind ~pineforest*bogs, WFD.UMF)
-WFD.occu.13 <- occu(~wildness + wind ~pineforest, WFD.UMF)
-WFD.occu.14 <- occu(~wildness + wind ~coniferpine + pet_emerge + wet, WFD.UMF)
-WFD.occu.15 <- occu(~wildness + wind ~coniferpine*wet + pet_emerge, WFD.UMF)
-WFD.occu.16 <- occu(~wildness + wind ~coniferpine*bogs + pet_emerge, WFD.UMF)
+WFD.occu.1 <- occu(~wildness + wind + tas ~1, WFD.UMF)
+WFD.occu.2 <- occu(~wildness + wind + tas~ pineforest*wet + pet_emerge, WFD.UMF)
+WFD.occu.3 <- occu(~wildness + wind + tas ~pineforest + pet_emerge + bogs, WFD.UMF)
+WFD.occu.4 <- occu(~wildness + wind + tas ~pineforest + pet_emerge + wet, WFD.UMF)
+WFD.occu.5 <- occu(~wildness + wind + tas ~pineforest + bogs, WFD.UMF)
+WFD.occu.6 <- occu(~wildness + wind + tas ~pineforest + wet, WFD.UMF)
+WFD.occu.7 <- occu(~wildness + wind + tas ~pineforest + pet_emerge, WFD.UMF)
+WFD.occu.8 <- occu(~wildness + wind + tas ~pineforest*pet_emerge + wet, WFD.UMF)
+WFD.occu.9 <- occu(~wildness + wind + tas ~pineforest*pet_emerge + bogs, WFD.UMF)
+WFD.occu.10 <- occu(~wildness + wind + tas ~pineforest*pet_emerge, WFD.UMF)
+WFD.occu.11 <- occu(~wildness + wind + tas ~pineforest*wet, WFD.UMF)
+WFD.occu.12 <- occu(~wildness + wind + tas ~pineforest*bogs, WFD.UMF)
+WFD.occu.13 <- occu(~wildness + wind + tas ~pineforest, WFD.UMF)
+WFD.occu.14 <- occu(~wildness + wind + tas ~coniferpine + pet_emerge + wet, WFD.UMF)
+WFD.occu.15 <- occu(~wildness + wind + tas ~coniferpine*wet + pet_emerge, WFD.UMF)
+WFD.occu.16 <- occu(~wildness + wind + tas ~coniferpine*bogs + pet_emerge, WFD.UMF)
 
 WFD.site.fits <- fitList(WFD.occu.1, WFD.occu.2, WFD.occu.3, WFD.occu.4, WFD.occu.5, WFD.occu.6, WFD.occu.7, WFD.occu.8, WFD.occu.9, WFD.occu.10, WFD.occu.11, WFD.occu.12, WFD.occu.13, WFD.occu.14, WFD.occu.15, WFD.occu.16)
 WFD.modSel <- modSel(WFD.site.fits)
 WFD.modSel
 
-#### Quadratic for tree variable does not improve model
+#### Quadratic for tree variable or 'wet' variable does not improve model
 ```
 
 Results
@@ -222,9 +222,8 @@ Results
 
 ## Model
 
-<!--------------------Best model now 14 including covariates for detectability ------------------->
-<!--------------------- AIC for model with no detectability covariates is slightly better but by < 1 ----------------->
-<!--------- Adding detectability covariates seems to change the sign of the 'wet' predictors - this is weird and doesn't represent a biological relationship that we know about - is this a good justification for getting rid? ------------>
+<!--------------------Best model now 14 including covariates for detectability (wildness, wind and air surface temp------------------->
+<!--------- Adding detectability covariates seems to change the sign of the 'wet' predictors - this is weird and doesn't represent a biological relationship that we know about - is this a good justification for getting rid? Or am I getting this wrong? Probably... I doubt the fit of these is good but it might be useful. ------------>
 <!----------- Lost the plot.................... -------------->
 <!------------------- Zeros are likely to be over water because 4-spotted chaser are more territorial over pools. When we include detectability does this make more pool habitats 0? If so, does this make the relationship with pet and 'wet' negative? ------->
 <!------------------ ACHAZ - add model results here ---------------->
