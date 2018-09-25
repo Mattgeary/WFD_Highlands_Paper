@@ -82,6 +82,8 @@ Methods
 
 ##Data
 
+<!------------- Records within 100m of each other were combined --------->
+
 White-faced darter presence records between 2000 and 2015 were obtained from the British Dragonfly society. These records represent incidental records rather than a stratified recording scheme and can represent flying adults, larvae or exuvia. Additionally, the records related to White-faced darter refer only to presence of the species. Absence was inferred from records of another species, Four-spotted chaser (_Libellula quadrimaculata_) which is also in flight during the flight period of white-faced darter. Four-spotted chaser is a conspicuous species which occurs in similar habitats to White-faced darter and is visually very different. Records of Four-spotted chaser imply that the sight was visited for the purpose of dragonfly recording and so the lack of records for White-faced darter on the same date suggest absence of this species [REF]. In fact, this absence may be an overestimate as Four-spotted chaser have higher detectability than White-faced darter due to their territorial patrolling behaviour [REF]. 
 
 ~Importance of using information from both Exuvia and adults~
@@ -110,22 +112,49 @@ NA.vals <- append(NA.vals, which(is.na(WFD.siteCovs$pet_emerge)))
 NA.vals <- append(NA.vals, which(is.na(WFD.siteCovs$wildness)))
 NA.vals <- append(NA.vals, which(is.na(WFD.siteCovs$peat)))
 
+###NEED TO ADD WIND AND potentially tas to this list (could add DTR and radiation?)#########
+
+WFD.obsCov.wind <- read.csv("Data/WFDObsCov_wind.csv")
+WFD.obsCov.tas <- read.csv("Data/WFDObsCov_tas.csv")
+
+#NA.vals <- append(NA.vals, setdiff(which(is.na(WFD.obsCov.tas)), which(is.na(WFD.occu.mat))) %/% ncol(WFD.occu.mat))
+
 WFD.occu.mat <- WFD.occu.mat[-c(NA.vals),]
 WFD.siteCovs <- WFD.siteCovs[-c(NA.vals),]
+WFD.obsCov.tas <- WFD.obsCov.tas[-c(NA.vals),]
+WFD.obsCov.wind <- WFD.obsCov.wind[-c(NA.vals),]
+
+## Missing covariates indicated by model fit below
+WFD.occu.mat <- WFD.occu.mat[-c(1016, 1027, 1037),]
+WFD.siteCovs <- WFD.siteCovs[-c(1016, 1027, 1037),]
+WFD.obsCov.tas <- WFD.obsCov.tas[-c(1016, 1027, 1037),]
+WFD.obsCov.wind <- WFD.obsCov.wind[-c(1016, 1027, 1037),]
+
+
+WFD.obsCov.AWI <- as.data.frame(WFD.siteCovs$AWI)
+for(i in 1:15){
+WFD.obsCov.AWI <- cbind(WFD.obsCov.AWI, as.data.frame(WFD.siteCovs$AWI))
+}
+WFD.obsCov.wildness <- as.data.frame(WFD.siteCovs$wildness)
+for(i in 1:15){
+WFD.obsCov.wildness <- cbind(WFD.obsCov.wildness, as.data.frame(WFD.siteCovs$wildness))
+}
 
 ## Create observation covariates list
-WFD.obsCov <- list('AWI' = WFD.siteCovs$AWI, wildness = WFD.siteCovs$wildness)
+WFD.obsCov <- list('AWI' = WFD.obsCov.AWI, 'wildness' = WFD.obsCov.wildness, 'wind' = WFD.obsCov.wind, 'tas' = WFD.obsCov.tas)
 
 ## Combine conifer/pine and bog/mire/bogwoodland
 WFD.siteCovs$coniferpine <- WFD.siteCovs$conifer + WFD.siteCovs$pineforest
 WFD.siteCovs$wet <- WFD.siteCovs$bogs + WFD.siteCovs$bogwoodland + WFD.siteCovs$mire
 
 # Create Unmarked data frame
-WFD.UMF <- unmarkedFrameOccu(y = WFD.occu.mat, siteCovs = WFD.siteCovs)
+WFD.UMF <- unmarkedFrameOccu(y = WFD.occu.mat, siteCovs = WFD.siteCovs, obsCovs = WFD.obsCov)
 
 # Scale and centre siteCovs
 siteCovs(WFD.UMF) <- scale(siteCovs(WFD.UMF))
 sC.scale <- scale(siteCovs(WFD.UMF))
+obsCovs(WFD.UMF) <- scale(obsCovs(WFD.UMF))
+oC.scale <- scale(obsCovs(WFD.UMF))
 ```
 
 ##Occupancy model
@@ -135,29 +164,57 @@ sC.scale <- scale(siteCovs(WFD.UMF))
 <!------------- We don't currently try any observation covariates - I know these didn't help but I'm thinking we should test that here, too? I'm not sure our model selection was the most methodical in the end. 
 AvH 13/08: Try a dynamic model dividing in 5 years slots? 
 -------------->
+<!--------------------- Adapted the model selection below to follow the Kery book (Applied Heirarchical modelling). Separate model selection step for detectability but not followed the stepwise approach to predictors. ------>
 
 ```{r occupancy}
 ### Candidate models obsCovs
-WFD.occu.1 <- occu(~1 ~1, WFD.UMF)
-WFD.occu.2 <- occu(~1~ pineforest*wet + pet_emerge, WFD.UMF)
-WFD.occu.3 <- occu(~1 ~pineforest + pet_emerge + bogs, WFD.UMF)
-WFD.occu.4 <- occu(~1 ~pineforest + pet_emerge + wet, WFD.UMF)
-WFD.occu.5 <- occu(~1 ~pineforest + bogs, WFD.UMF)
-WFD.occu.6 <- occu(~1 ~pineforest + wet, WFD.UMF)
-WFD.occu.7 <- occu(~1 ~pineforest + pet_emerge, WFD.UMF)
-WFD.occu.8 <- occu(~1 ~pineforest*pet_emerge + wet, WFD.UMF)
-WFD.occu.9 <- occu(~1 ~pineforest*pet_emerge + bogs, WFD.UMF)
-WFD.occu.10 <- occu(~1 ~pineforest*pet_emerge, WFD.UMF)
-WFD.occu.11 <- occu(~1 ~pineforest*wet, WFD.UMF)
-WFD.occu.12 <- occu(~1 ~pineforest*bogs, WFD.UMF)
-WFD.occu.13 <- occu(~1 ~pineforest, WFD.UMF)
-WFD.occu.14 <- occu(~1 ~coniferpine + pet_emerge + wet, WFD.UMF)
-WFD.occu.15 <- occu(~1 ~coniferpine*wet + pet_emerge, WFD.UMF)
-WFD.occu.16 <- occu(~1 ~coniferpine*bogs + pet_emerge, WFD.UMF)
+WFD.occu.obs.1 <- occu(~1 ~1, WFD.UMF)
+WFD.occu.obs.2 <- occu(~AWI ~1, WFD.UMF)
+WFD.occu.obs.3 <- occu(~wildness ~1, WFD.UMF)
+WFD.occu.obs.4 <- occu(~wind ~1, WFD.UMF)
+WFD.occu.obs.5 <- occu(~tas ~1, WFD.UMF)
+#WFD.occu.obs.6 <- occu(~AWI + wildness + wind + tas ~1, WFD.UMF)
+WFD.occu.obs.7 <- occu(~AWI + wildness + wind ~1, WFD.UMF)
+WFD.occu.obs.8 <- occu(~AWI + wildness + tas ~1, WFD.UMF)
+WFD.occu.obs.9 <- occu(~AWI + wildness + tas ~1, WFD.UMF)
+WFD.occu.obs.10 <- occu(~AWI + wind + tas ~1, WFD.UMF)
+WFD.occu.obs.11 <- occu(~wildness + wind + tas ~1, WFD.UMF)
+WFD.occu.obs.12 <- occu(~AWI + wildness ~1, WFD.UMF)
+WFD.occu.obs.13 <- occu(~AWI + wind ~1, WFD.UMF)
+WFD.occu.obs.14 <- occu(~wildness + wind ~1, WFD.UMF)
+WFD.occu.obs.15 <- occu(~AWI + tas ~1, WFD.UMF)
+WFD.occu.obs.16 <- occu(~wildness + tas ~1, WFD.UMF)
+#WFD.occu.obs.17 <- occu(~wind + tas ~1, WFD.UMF)
 
-WFD.obs.fits <- fitList(WFD.occu.5, WFD.occu.6, WFD.occu.7, WFD.occu.8, WFD.occu.9, WFD.occu.10, WFD.occu.11, WFD.occu.12, WFD.occu.13, WFD.occu.14, WFD.occu.15, WFD.occu.16)
-WFD.modSel <- modSel(WFD.obs.fits)
+WFD.obs.fits <- fitList(WFD.occu.obs.1, WFD.occu.obs.2, WFD.occu.obs.3, WFD.occu.obs.4, WFD.occu.obs.5, WFD.occu.obs.7, WFD.occu.obs.8, WFD.occu.obs.9, WFD.occu.obs.10, WFD.occu.obs.11, WFD.occu.obs.12, WFD.occu.obs.13, WFD.occu.obs.14, WFD.occu.obs.15, WFD.occu.obs.16)
+WFD.modSel.obs <- modSel(WFD.obs.fits)
+WFD.modSel.obs
+
+
+
+### Candidate models siteCovs
+WFD.occu.1 <- occu(~wildness + wind + tas ~1, WFD.UMF)
+WFD.occu.2 <- occu(~wildness + wind + tas~ pineforest*wet + pet_emerge, WFD.UMF)
+WFD.occu.3 <- occu(~wildness + wind + tas ~pineforest + pet_emerge + bogs, WFD.UMF)
+WFD.occu.4 <- occu(~wildness + wind + tas ~pineforest + pet_emerge + wet, WFD.UMF)
+WFD.occu.5 <- occu(~wildness + wind + tas ~pineforest + bogs, WFD.UMF)
+WFD.occu.6 <- occu(~wildness + wind + tas ~pineforest + wet, WFD.UMF)
+WFD.occu.7 <- occu(~wildness + wind + tas ~pineforest + pet_emerge, WFD.UMF)
+WFD.occu.8 <- occu(~wildness + wind + tas ~pineforest*pet_emerge + wet, WFD.UMF)
+WFD.occu.9 <- occu(~wildness + wind + tas ~pineforest*pet_emerge + bogs, WFD.UMF)
+WFD.occu.10 <- occu(~wildness + wind + tas ~pineforest*pet_emerge, WFD.UMF)
+WFD.occu.11 <- occu(~wildness + wind + tas ~pineforest*wet, WFD.UMF)
+WFD.occu.12 <- occu(~wildness + wind + tas ~pineforest*bogs, WFD.UMF)
+WFD.occu.13 <- occu(~wildness + wind + tas ~pineforest, WFD.UMF)
+WFD.occu.14 <- occu(~wildness + wind + tas ~coniferpine + pet_emerge + wet, WFD.UMF)
+WFD.occu.15 <- occu(~wildness + wind + tas ~coniferpine*wet + pet_emerge, WFD.UMF)
+WFD.occu.16 <- occu(~wildness + wind + tas ~coniferpine*bogs + pet_emerge, WFD.UMF)
+
+WFD.site.fits <- fitList(WFD.occu.1, WFD.occu.2, WFD.occu.3, WFD.occu.4, WFD.occu.5, WFD.occu.6, WFD.occu.7, WFD.occu.8, WFD.occu.9, WFD.occu.10, WFD.occu.11, WFD.occu.12, WFD.occu.13, WFD.occu.14, WFD.occu.15, WFD.occu.16)
+WFD.modSel <- modSel(WFD.site.fits)
 WFD.modSel
+
+#### Quadratic for tree variable or 'wet' variable does not improve model
 ```
 
 Results
@@ -165,25 +222,30 @@ Results
 
 ## Model
 
+<!--------------------Best model now 14 including covariates for detectability (wildness, wind and air surface temp------------------->
+<!--------- Adding detectability covariates seems to change the sign of the 'wet' predictors - this is weird and doesn't represent a biological relationship that we know about - is this a good justification for getting rid? Or am I getting this wrong? Probably... I doubt the fit of these is good but it might be useful. ------------>
+<!----------- Lost the plot.................... -------------->
+<!------------------- Zeros are likely to be over water because 4-spotted chaser are more territorial over pools. When we include detectability does this make more pool habitats 0? If so, does this make the relationship with pet and 'wet' negative? ------->
 <!------------------ ACHAZ - add model results here ---------------->
 
 The model with the lowest AIC score used the proportion of pineforest within 1km and the proportion of 'wet' habitats within 1km as predictors with no covariates related to detectability. Other models with $ \Delta AIC > 5$ also tended to include pineforest as a predictor either alone or in combination with coniferous forest and some degree fo wetness either represented by 'wet' habitat or potential evapotranspiration during the emergence period. However, no model had $ \Delta AIC < 2 $ so we retained only the 'best'model for further analyses. 
 
-A MacKenzie & Bailey [ref] goodness of fit test...
+<!---------- A MacKenzie & Bailey [ref] goodness of fit test doesn't work because there are two many individual occupancy signatures --------------->
 
 ```{r modVal}
-#### GOF test hangs at 28000 - no error just keeps going?!
-WFD.gof <- mb.gof.test(WFD.occu.11, nsim = 1000)
-WFD.gof
+### Does not work for our model
+# #### GOF test hangs at 28000 - no error just keeps going?!
+# WFD.gof <- mb.gof.test(WFD.occu.14, nsim = 10)
+# WFD.gof
+# 
+# ###Indeed this hangs also on the server :(
 
-###Indeed this hangs also on the server :(
-
-
+## Below is currently not quite right - occupancy matrix needs summarising over 1 or 2 of the dimensions.... work in progress...
 ###GOF with parboot:
-fitstats <- function(WFD.occu.11) {
-  observed <- getY(WFD.occu.11@data)
-  expected <- fitted(WFD.occu.11)
-  resids <- residuals(WFD.occu.11)
+fitstats <- function(WFD.occu.14) {
+  observed <- getY(WFD.occu.14@data)
+  expected <- fitted(WFD.occu.14)
+  resids <- residuals(WFD.occu.14)
   sse <- sum(resids^2,na.rm=TRUE)
   chisq <- sum((observed - expected)^2 / expected,na.rm=TRUE)
   freeTuke <- sum((sqrt(observed) - sqrt(expected))^2,na.rm=TRUE)
@@ -191,7 +253,7 @@ fitstats <- function(WFD.occu.11) {
   return(out)
 }
 
-pb <- parboot(WFD.occu.11, fitstats, nsim=10000, report=1)
+pb <- parboot(WFD.occu.14, fitstats, nsim=10000, report=1)
 cHat_pb <- pb@t0[2] / mean(pb@t.star[,2])
 pb
 cHat_pb
