@@ -75,7 +75,7 @@ Methods
 
 <!------------- Records within 100m of each other were combined --------->
 
-White-faced darter presence records between 2000 and 2015 were obtained from the British Dragonfly society. These records represent incidental records rather than a stratified recording scheme and can represent flying adults, larvae or exuvia. Additionally, the records related to White-faced darter refer only to presence of the species. Absence was inferred from records of another species, Four-spotted chaser (_Libellula quadrimaculata_) which is also in flight during the flight period of white-faced darter. Four-spotted chaser is a conspicuous species which occurs in similar habitats to White-faced darter and is visually very different. Records of Four-spotted chaser imply that the sight was visited for the purpose of dragonfly recording and so the lack of records for White-faced darter on the same date suggest absence of this species [REF]. In fact, this absence may be an overestimate as Four-spotted chaser have higher detectability than White-faced darter due to their territorial patrolling behaviour [REF]. 
+White-faced darter presence records between 2000 and 2015 were obtained from the British Dragonfly society. These records represent incidental records rather than a stratified recording scheme and can represent flying adults, larvae or exuvia. Additionally, the records related to White-faced darter refer only to presence of the species. We used spatial filtering to combine records within 100m of each other to reduce potential biases due to inaccurate georeferencing, individuals seen at distance and variability due to GPS accuracy [REF].
 
 ```{r}
 ## Read in data - including occupancy matrix
@@ -103,11 +103,17 @@ Environmental variables used to predict occupancy of White-faced darter were dow
 ```{r}
 Env.vars <- stack(raster('EnvVars/bogs_50.img'), raster('EnvVars/bogwoodland_50.img'), raster('EnvVars/PET_emerge_50.img'), raster('EnvVars/conifer_50.img'), raster('EnvVars/moor_50.img'), raster('EnvVars/pineforest_50.img'), raster('EnvVars/standingwater_50.img'))
 names(Env.vars) <- c("bog", "bogwoodland", "PET_emerge", "conifer", "moor", "pineforest", "standingwater")
+
+### Check correlation between Env Vars
+WFD.pres.env <- extract(Env.vars, WFD.pres[,1:2])
+cor(WFD.pres.env)
+### All < 0.5
+
 ```
 
 # MaxEnt Model
 
-Distribution models were fitted using MaxEnt version XXX through the dismo [REF] package in R. We used the ENMEvaluate package [REF] to find the 'best' combination of potential relationships with variables and the optimum regularisation parameter. We tested linear, quadratic, product and threshold along with combinations of these. We used regularisation values between 0 and 2.5 at 0.5 increments. THe optimum model was assessed by comparing AICcs across models [REF]. Once selected, we fitted the 'best' model using 10- crossvalidated replicates. Models were evaluated using the area under the reciever operating characterisitc curve (AUC; [REF - Fielding and Bell])as well as the True Skill Statistic [REF]. 
+Distribution models were fitted using MaxEnt version XXX through the dismo [REF] package in R. We used the ENMEvaluate package [REF] to find the 'best' combination of potential relationships with variables and the optimum regularisation parameter. We used Pearson's correaltion coefficient to check for correlation between predictor variables and in all cases these were less than 0.5. We tested linear, quadratic, product and threshold along with combinations of these. We used regularisation values between 0 and 2.5 at 0.5 increments. The optimum model was assessed by comparing AICcs across models [REF]. Once selected, we fitted the 'best' model using 10- crossvalidated replicates. Models were evaluated using the area under the reciever operating characterisitc curve (AUC; [REF - Fielding and Bell])as well as the True Skill Statistic [REF]. We used Moran's I to cjheck for autocorrelation in the residuals (1 - predicted values at presence points). 
 
 ```{r}
 ### Models run on the server
