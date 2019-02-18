@@ -1,0 +1,418 @@
+---
+title: "White-faced Darter distribution in the Scottish Highlands is related to wet pine forests"
+authors: "Matthew Geary & Achaz von Hardenberg
+output:
+  pdf_document: 
+    latex_engine: xelatex
+  html_notebook: default
+---
+
+---
+title: White -faced darter distribution in the Scottish Highlands
+author: "Matthew Geary & Achaz von Hardenberg"
+date: "2018"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE)
+library(unmarked)
+library(raster)
+library(AICcmodavg)
+```
+
+# Main message: WHITE-FACED DARTER OCCUPANCY IS POSITIVELY RELATED TO THE PRESENCE OF WET FOREST HABITATS. THEY ARE LIKELY TO OCCUPY MORE HABITAT WITHIN THE SCOTTISH HIGHLANDS THAN IS CURRENTLY RECORDED. 
+
+## Abstract
+
+1) Invertebrate species are often overlooked in conservation ecology research
+3) In particular, our understanding of dragonfly distributions is often geographically comprehensive but less so in ecological terms
+4) White-faced darter is a lowland peatbog specialist dragonfly which has experienced population declines in Great Britain. They are thought to rely on peat-rich pool complexes within woodland but this has not yet been empirically tested
+5) We used dragonfly recording data from XXX to XXX to investigate habitat preference for White-faced darter using MaxEnt across large scales in the highlands of Scotland
+6) Our best models used the interaction of pine forest and wet, bog landscapes as predictors and suggested that the probability of White-faced darter occupancy increases with the local proportions of both bog and forest
+7) Our models suggest that White-faced darter may be present in currently unknown sites across the highlands and their management should concentrate on maintaining sphagnum rich pool complexes and the maintenance and restoration of native forests in which these pool complexes occur
+
+
+
+
+Introduction
+--------------
+
+* Dragonflies
+
+Globally conservation research, intervention and management is biased towards high-profile taxa [REF]. Disproportionate effort is afforded to mammals and birds in particular whereas invertebrates, which make up the majority of species present on earth, receive relatively little attention [REF]. Cardoso _et al._ [REF] suggest that the reasons for this discrepancy can be explained by a series of potential impediments that reduce support for invertebrate conservation. These include a lack of public and political support, a lack of taxonomic or ecological knowledge, a need to refine survey methods and a need to understand species distributions. Some of this bias can also be explained by human preference for 'charismatic' species and by an understandable tendency to build on previous conservation success. However, the body of literature on butterfly conservation [REF], ecology [REF] and behaviour [REF] demonstrates the potential for invertebrate conservation. All of these reasons provide a compelling justification for undertaking conservation ecology research focusing on invertebrate species. 
+
+Odonata, dragonflies and damselflies, are also relatively 'charismatic' invertebrate species and have received some considerable attention in the scientific literature [REF - model organisms book]. However, Odonata conservation is still in its relative infancy [REF] and even in countries with relatively few species [REF] where conservation is seen as a social priority [REF] such as the U.K. there is relatively little conservation action specifically for Odonata [REF].  The obstacles suggested by Cardoso _et al._ [REF] certainly apply to Odonata conservation [REF - Causnitzer] at both global and regional scales.  Indeed, priorities highlighted on the UK red list for Odonata include fully establishing species distributions and habitat requirements for several species [REF - red list], particularly those which inhabit remote areas and recommend efforts to monitor and understand population change. 
+
+* Threats
+The multi-stage life-cycle of odonata species leaves them vulerable to threats in a number of ways [REF]. Indeed, around 25% of UK dragonfly and damselfly species are recognised in the red-data book [REF] The aquatic larval stage is vulnerable to aquatic pollution [REF], introduced species [REF] and land-use change [REF] and adult stages are particularly vulnerable to land-use change and habitat fragmentation [REF]. The largest proportions of both data deficient and threatened species are forest species which suggests that investigating the use and importance of forest habitats to dragonfly species is of particular importance. THe majority of threatened dragonfly species are found in teh tropics [REF] and species in Northern latitudes have been more comprehensivley assessed [REF]. However, although conservation assessment may have taken place it does not necessarily follow that threats and habitat requirments are well known [REF]. Scale is also an important factor in assessing threats to individual populations. Globally, peatland dragonflies tend to be of lower conservation priority becasue of the large areas of peatland habitat available in the Northern Hemishpere (e.g. in Scandinavia) [REF]. However, peatland habitats can be locally threatened and are priority habitats in the UK [REF]. In these areas peatland species may be of conservation concern [REF].  
+
+
+* WFD
+* WFD Distribution
+* WFD Habitat
+White-faced darter (_Leucorhinnia dubia_) are a lowland bog specialist dragonfly species [REF]. In great Britain their distribution is heavily biased towards the Scottish highlands [REF]. There are several populations further south, in England, which have been the focus of conservation attention, including reintroduction programmes [REF].In Scotland their distribution stretches from Galloway in the South to Ross-shire in the North although the bulk of the population is found in the North on both sides of the Great Glen Fault. In the east they are found in parts of the Cairngorms and Grampians and they can be found on the West coast although they do not reach as far as the Inner Hebrides [REF].  The Scottish populations are thought to be declining but currently receive little conservation intervention [REF?]. The species is well monitored in some areas but their patchy distributions across a large landscape means that the species is thought to be under-recorded [REF]. White-faced darter habitat is well described in current ID guides and atlases although the evidence base for this is currently largely anecdotal or based on localised populations in England [REF]. As with many dragonfly species they have not been the subject of quantitative studies regarding habitat associations except at the very local scale [REF - BDS paper]. White-faced darter are generally found in acidic pools associated with pine or birch woodland [REF]. These pools may form part of pool complexes and it is not unusual for new sites to be located both close to current ones and at larger distances [REF]. They have a particularly strong association with Sphagnum moss [REF] and it is thought that well developed Sphagnum is an essential requirement for White-faced darter larval habitat [REF]. 
+
+### Using SDMs and occupancy for conservation prioritisation and survey locations
+
+Understanding species distributions is useful for the planning of future surveys [REF] and identifying priority areas for conservation action [REF]. As well as being useful for species which are poorly known [REF], or inhabit remote locations [REF] so their populations cannot be effectively monitored there are also species which are well know locally but poorly known over wider areas [REF]. Monitoring projects for various taxa have shown that biases can occur regarding the distribution of moinitoring effort or species records [REF]. This can be a particular problem for understudied taxa where expertise may be localised or restricted to only a few individuals [REF]. Where species are monitored sporadically [REF], through only incidental sightings [REF] or are extremely rare [REF] we might only have access to presence records for a species. Similarly, where taxa are monitored using volunteer recording schemes there is a trade-off between the information content of the data and the ease with which volunteers can complete records in the field [REF]. More complex surveys which result in information-rich data require more experienced/trained recorders and can limit the geopgraphic coverage of the survey [REF]. On the other hand, simpler more widespread surveys can introduce issues with data quality due to inexperienced observers or patch records [REF]. Information-limited data restrict the methods available to investigate species distributions [REF] and can make it hard to project models onto unknown or under-recorded areas [REF]. In particular, this is a problem because, although species presence can be established, there are likely to be few or low quality records of species absence [REF]. For other species, however, more comprehensive monitoring programmes exist and this allows methods which can incorporate uncertainty of absence and produce more robust estimates of species occupancy across a landscape [REF]. 
+
+<!--### Importance of incorporating imperfect detection-->
+
+<!--Issues regarding imperfect detection of species in the field are well established in the literature [REF]. Where species are rare, localised or survey coverage is spatially or temporally patchy the inability to detect absence of a species is particularly problematic. However, using data from long-term recording schemes or those involving large numbers of volunteers provides the opportunity for repeat visits to a site even if this was not originally part of the survey design [REF]. We can also infer absence from detailed recordings from experienced observers who regularly record complete lists, records of all species which are present at a site [REF]. Recent advances in occupancy modelling have established that surrogate species can be used to infer absence under some recording schemes. EXAMPLE REF. These advances provide an opportunity to increase the value of data from widespread recording schemes [REF], 'presence only' datasets [REF] and for neglected taxa where recording is sparse [REF].-->
+
+<!--* Occupancy models for insects-->
+<!--* Useful for dragonflies-->
+
+<!--Although models using an occupancy framework are now relatively common in the vertebrate literature and are now used to determine species distributions [REF] and estimate population sizes [REF]. They are not currently widely used in the invertebrate literature. However, as invertebrate populations can be hard to detect [REF], relatively mobile on small scales [REF] and may be irruptive [REF]. Occupancy models provide a useful tool to account for some of the variability in the probability of records or counts of invertebrate species. While there is some disagreement on the most effective way to survey dragonflies [REF - dragonfly delusion papers] both of the methods suggested by [REF] and [REF] would benefit from incorporating ideas surrounding imperfect detection into their analyses. The detectability of adult dragonflies can differ across habitats [REF - BDS paper] and can be dependent on weather conditions [REF]. Exuvia, on the other hand can be well hidden amongst vegetation [REF] and can be easily dislodged in inclement weather [REF]. In both cases false absence records [REF] could influence inferences based on survey data [REF]. Occupancy models have been used to demonstrate methodological improvements using Odonata as model species [REF] and the analyse population trends [REF] but have not yet been used to analyse species distributions using dragonfly species. Here we use an occupancy model [REF] to investigate White-faced darter distribution in the Scottish Highlands, UK in relation to large-scale habitat variables using use data from a large scale citizen-science recording scheme. -->
+
+
+<!--Can we add something on White faced darter distribution in Scotland? is there any paper done in this before or can we claim that we are the first to model the distribution in Scotland?. What about other dragonflies in Scotland and their conservation? I think there is enough on the issue of imperfect detection, but we have to put more biological and conservation background maybe -->
+
+
+
+
+
+
+
+Methods
+--------
+
+##Data
+
+<!------------- Records within 100m of each other were combined --------->
+
+White-faced darter presence records between 2000 and 2015 were obtained from the British Dragonfly society. These records represent incidental records rather than a stratified recording scheme and can represent flying adults, larvae or exuvia. Additionally, the records related to White-faced darter refer only to presence of the species. Absence was inferred from records of another species, Four-spotted chaser (_Libellula quadrimaculata_) which is also in flight during the flight period of white-faced darter. Four-spotted chaser is a conspicuous species which occurs in similar habitats to White-faced darter and is visually very different. Records of Four-spotted chaser imply that the sight was visited for the purpose of dragonfly recording and so the lack of records for White-faced darter on the same date suggest absence of this species [REF]. In fact, this absence may be an overestimate as Four-spotted chaser have higher detectability than White-faced darter due to their territorial patrolling behaviour [REF]. 
+
+~Importance of using information from both Exuvia and adults~
+White-faced darter, and dragonflies more generally, spend the majority of their lifespans as larvae and only exist as breeding adults for a short period of time [REF]. Habitat preference therefore, involves two separate processes, firstly that females select habitat which they percieve to be suitable for oviposition and secondly, that the habitat selected is truly suitable for larvae to survive to adulthood. Indeed, this problem and the implications it presents for surveying dragonfly species has been noted in the literature with XXXX [REF] suggesting that only records of exuvia can demonstrate successful breeding and therefore more fully represent the population. However, exuvia counts can be difficult both in terms of logistics [REF] and detectability [REF] and may not fully represent the movements and habitat preferences of adult dragonflies [REF]. We chose to use data from both of these sources along with data from larval surveys. As exuvia counts were much rarer for this species than counts from adult transects (XXX compared with XXXX) our method integrates models of exuvia and adult occupancy.
+<!------------- I'm not sure thsi is right anymore. We don't integrate them do we? We just use data from both? ---->
+
+
+```{r pres}
+## Read in data
+WFD.occu.mat <- read.csv("Data/WFDHighland_wide_UMF_FULL.csv")[,2:17]
+```
+
+
+##Environmental variables
+<!--------------- Matt to finish this section ------------>
+Environmental variables used to predict occupancy of White-faced darter were downloaded from the EUNIS land-cover classification for Scotland (SOURCE AND LICENCE). The variables chosen were based on those described in the UK [REF] and European [REF] dragonfly atlases which specify wet, boggy areas within a woodland complex [REF]. We used established EUNIS classes [REF] to produce variables representing pineforest, coniferous forest and 'wet' landscapes (bogs, blanket bog, bog woodland, fens and mires). <!------------------- Need to check these variables -------------> Othe rpotential variables such as mixed woodland or ancient woodland measures from toehr sources were not used in our analyses due to issues with collinearity. Instead we retained onyl the variables which we considered to have the strongest ecological connection with White-faced darter distribution based on the avialable literature [REF]. We converted our environmental variables to proportional maps per 1km at a 10m resolution from the original 10m resolution categorical lancover maps using the raster package [REF - Hijmans] in R [REF - CRAN]. Additionally we used data from the CEH CHESS dataset [REF] to represent potential Evapotranspiration (PET) and several weather variables (wind speed, rainfall XXX)all of which were resampled to match the resolution of our lancover data using the raster package in R. However, weather variables used as observation covariates did not improve the fit of our occupancy models <!--------- This may need to come later --------->
+
+
+```{r envVars}
+# Read in site and observation covariates
+WFD.siteCovs <- read.csv("Data/EnvVars_FULL.csv")
+
+## Identify rows with NA values - these are outside of the Scottish mainland
+NA.vals <- which(is.na(WFD.siteCovs$AWI))
+NA.vals <- append(NA.vals, which(is.na(WFD.siteCovs$pet_emerge)))
+NA.vals <- append(NA.vals, which(is.na(WFD.siteCovs$wildness)))
+NA.vals <- append(NA.vals, which(is.na(WFD.siteCovs$peat)))
+
+###NEED TO ADD WIND AND potentially tas to this list (could add DTR and radiation?)#########
+
+WFD.obsCov.wind <- read.csv("Data/WFDObsCov_wind.csv")
+WFD.obsCov.tas <- read.csv("Data/WFDObsCov_tas.csv")
+
+#NA.vals <- append(NA.vals, setdiff(which(is.na(WFD.obsCov.tas)), which(is.na(WFD.occu.mat))) %/% ncol(WFD.occu.mat))
+
+WFD.occu.mat <- WFD.occu.mat[-c(NA.vals),]
+WFD.siteCovs <- WFD.siteCovs[-c(NA.vals),]
+WFD.obsCov.tas <- WFD.obsCov.tas[-c(NA.vals),]
+WFD.obsCov.wind <- WFD.obsCov.wind[-c(NA.vals),]
+
+## Missing covariates indicated by model fit below
+WFD.occu.mat <- WFD.occu.mat[-c(1016, 1027, 1037),]
+WFD.siteCovs <- WFD.siteCovs[-c(1016, 1027, 1037),]
+WFD.obsCov.tas <- WFD.obsCov.tas[-c(1016, 1027, 1037),]
+WFD.obsCov.wind <- WFD.obsCov.wind[-c(1016, 1027, 1037),]
+
+
+WFD.obsCov.AWI <- as.data.frame(WFD.siteCovs$AWI)
+for(i in 1:15){
+WFD.obsCov.AWI <- cbind(WFD.obsCov.AWI, as.data.frame(WFD.siteCovs$AWI))
+}
+WFD.obsCov.wildness <- as.data.frame(WFD.siteCovs$wildness)
+for(i in 1:15){
+WFD.obsCov.wildness <- cbind(WFD.obsCov.wildness, as.data.frame(WFD.siteCovs$wildness))
+}
+
+## Create observation covariates list
+WFD.obsCov <- list('AWI' = WFD.obsCov.AWI, 'wildness' = WFD.obsCov.wildness, 'wind' = WFD.obsCov.wind, 'tas' = WFD.obsCov.tas)
+
+## Combine conifer/pine and bog/mire/bogwoodland
+WFD.siteCovs$coniferpine <- WFD.siteCovs$conifer + WFD.siteCovs$pineforest
+WFD.siteCovs$wet <- WFD.siteCovs$bogs + WFD.siteCovs$bogwoodland + WFD.siteCovs$mire
+
+# Create Unmarked data frame
+WFD.UMF <- unmarkedFrameOccu(y = WFD.occu.mat, siteCovs = WFD.siteCovs, obsCovs = WFD.obsCov)
+
+# Scale and centre siteCovs
+siteCovs(WFD.UMF) <- scale(siteCovs(WFD.UMF))
+sC.scale <- scale(siteCovs(WFD.UMF))
+obsCovs(WFD.UMF) <- scale(obsCovs(WFD.UMF))
+oC.scale <- scale(obsCovs(WFD.UMF))
+```
+
+##Occupancy model
+
+<!------------------ ACHAZ - explain the model etc. here ---------------->
+
+<!------------- We don't currently try any observation covariates - I know these didn't help but I'm thinking we should test that here, too? I'm not sure our model selection was the most methodical in the end. 
+AvH 13/08: Try a dynamic model dividing in 5 years slots? 
+-------------->
+<!--------------------- Adapted the model selection below to follow the Kery book (Applied Heirarchical modelling). Separate model selection step for detectability but not followed the stepwise approach to predictors. ------>
+
+```{r occupancy}
+### Candidate models obsCovs
+WFD.occu.obs.1 <- occu(~1 ~1, WFD.UMF)
+WFD.occu.obs.2 <- occu(~AWI ~1, WFD.UMF)
+WFD.occu.obs.3 <- occu(~wildness ~1, WFD.UMF)
+WFD.occu.obs.4 <- occu(~wind ~1, WFD.UMF)
+WFD.occu.obs.5 <- occu(~tas ~1, WFD.UMF)
+#WFD.occu.obs.6 <- occu(~AWI + wildness + wind + tas ~1, WFD.UMF)
+WFD.occu.obs.7 <- occu(~AWI + wildness + wind ~1, WFD.UMF)
+WFD.occu.obs.8 <- occu(~AWI + wildness + tas ~1, WFD.UMF)
+WFD.occu.obs.9 <- occu(~AWI + wildness + tas ~1, WFD.UMF)
+WFD.occu.obs.10 <- occu(~AWI + wind + tas ~1, WFD.UMF)
+WFD.occu.obs.11 <- occu(~wildness + wind + tas ~1, WFD.UMF)
+WFD.occu.obs.12 <- occu(~AWI + wildness ~1, WFD.UMF)
+WFD.occu.obs.13 <- occu(~AWI + wind ~1, WFD.UMF)
+WFD.occu.obs.14 <- occu(~wildness + wind ~1, WFD.UMF)
+WFD.occu.obs.15 <- occu(~AWI + tas ~1, WFD.UMF)
+WFD.occu.obs.16 <- occu(~wildness + tas ~1, WFD.UMF)
+#WFD.occu.obs.17 <- occu(~wind + tas ~1, WFD.UMF)
+
+WFD.obs.fits <- fitList(WFD.occu.obs.1, WFD.occu.obs.2, WFD.occu.obs.3, WFD.occu.obs.4, WFD.occu.obs.5, WFD.occu.obs.7, WFD.occu.obs.8, WFD.occu.obs.9, WFD.occu.obs.10, WFD.occu.obs.11, WFD.occu.obs.12, WFD.occu.obs.13, WFD.occu.obs.14, WFD.occu.obs.15, WFD.occu.obs.16)
+WFD.modSel.obs <- modSel(WFD.obs.fits)
+WFD.modSel.obs
+
+
+
+### Candidate models siteCovs
+WFD.occu.1 <- occu(~wildness + wind + tas ~1, WFD.UMF)
+WFD.occu.2 <- occu(~wildness + wind + tas~ pineforest*wet + pet_emerge, WFD.UMF)
+WFD.occu.3 <- occu(~wildness + wind + tas ~pineforest + pet_emerge + bogs, WFD.UMF)
+WFD.occu.4 <- occu(~wildness + wind + tas ~pineforest + pet_emerge + wet, WFD.UMF)
+WFD.occu.5 <- occu(~wildness + wind + tas ~pineforest + bogs, WFD.UMF)
+WFD.occu.6 <- occu(~wildness + wind + tas ~pineforest + wet, WFD.UMF)
+WFD.occu.7 <- occu(~wildness + wind + tas ~pineforest + pet_emerge, WFD.UMF)
+WFD.occu.8 <- occu(~wildness + wind + tas ~pineforest*pet_emerge + wet, WFD.UMF)
+WFD.occu.9 <- occu(~wildness + wind + tas ~pineforest*pet_emerge + bogs, WFD.UMF)
+WFD.occu.10 <- occu(~wildness + wind + tas ~pineforest*pet_emerge, WFD.UMF)
+WFD.occu.11 <- occu(~wildness + wind + tas ~pineforest*wet, WFD.UMF)
+WFD.occu.12 <- occu(~wildness + wind + tas ~pineforest*bogs, WFD.UMF)
+WFD.occu.13 <- occu(~wildness + wind + tas ~pineforest, WFD.UMF)
+WFD.occu.14 <- occu(~wildness + wind + tas ~coniferpine + pet_emerge + wet, WFD.UMF)
+WFD.occu.15 <- occu(~wildness + wind + tas ~coniferpine*wet + pet_emerge, WFD.UMF)
+WFD.occu.16 <- occu(~wildness + wind + tas ~coniferpine*bogs + pet_emerge, WFD.UMF)
+
+WFD.site.fits <- fitList(WFD.occu.1, WFD.occu.2, WFD.occu.3, WFD.occu.4, WFD.occu.5, WFD.occu.6, WFD.occu.7, WFD.occu.8, WFD.occu.9, WFD.occu.10, WFD.occu.11, WFD.occu.12, WFD.occu.13, WFD.occu.14, WFD.occu.15, WFD.occu.16)
+WFD.modSel <- modSel(WFD.site.fits)
+WFD.modSel
+
+#### Quadratic for tree variable or 'wet' variable does not improve model
+```
+
+Results
+--------
+
+## Model
+
+<!--------------------Best model now 14 including covariates for detectability (wildness, wind and air surface temp------------------->
+<!--------- Adding detectability covariates seems to change the sign of the 'wet' predictors - this is weird and doesn't represent a biological relationship that we know about - is this a good justification for getting rid? Or am I getting this wrong? Probably... I doubt the fit of these is good but it might be useful. ------------>
+<!----------- Lost the plot.................... -------------->
+<!------------------- Zeros are likely to be over water because 4-spotted chaser are more territorial over pools. When we include detectability does this make more pool habitats 0? If so, does this make the relationship with pet and 'wet' negative? ------->
+<!------------------ ACHAZ - add model results here ---------------->
+
+The model with the lowest AIC score used the proportion of pineforest within 1km and the proportion of 'wet' habitats within 1km as predictors with no covariates related to detectability. Other models with $ \Delta AIC > 5$ also tended to include pineforest as a predictor either alone or in combination with coniferous forest and some degree fo wetness either represented by 'wet' habitat or potential evapotranspiration during the emergence period. However, no model had $ \Delta AIC < 2 $ so we retained only the 'best'model for further analyses. 
+
+<!---------- A MacKenzie & Bailey [ref] goodness of fit test doesn't work because there are two many individual occupancy signatures --------------->
+
+```{r modVal}
+### Does not work for our model
+# #### GOF test hangs at 28000 - no error just keeps going?!
+# WFD.gof <- mb.gof.test(WFD.occu.14, nsim = 10)
+# WFD.gof
+# 
+# ###Indeed this hangs also on the server :(
+
+## Below is currently not quite right - occupancy matrix needs summarising over 1 or 2 of the dimensions.... work in progress...
+###GOF with parboot:
+fitstats <- function(WFD.occu.14) {
+  observed <- getY(WFD.occu.14@data)
+  expected <- fitted(WFD.occu.14)
+  resids <- residuals(WFD.occu.14)
+  sse <- sum(resids^2,na.rm=TRUE)
+  chisq <- sum((observed - expected)^2 / expected,na.rm=TRUE)
+  freeTuke <- sum((sqrt(observed) - sqrt(expected))^2,na.rm=TRUE)
+  out <- c(SSE=sse, Chisq=chisq, freemanTukey=freeTuke)
+  return(out)
+}
+
+pb <- parboot(WFD.occu.14, fitstats, nsim=10000, report=1)
+cHat_pb <- pb@t0[2] / mean(pb@t.star[,2])
+pb
+cHat_pb
+
+#This works, but the results are not so exciting... the Chisq goodness of fit test indicates significant deviation from the expected distribution. Also Chat is >1, further suggesting lack of fit 
+```
+<!----------------------- Model results here ------------->
+
+
+
+
+```{r modSel}
+#### Need to prettify...
+print(WFD.modSel)
+```
+
+```{r fig1}
+layout(matrix(c(1,2,3,4), 2, 2, byrow = TRUE))
+new.dat<- data.frame(pineforest=0,wet=seq(-0.49035 ,4.65173,,50))
+WFD.occu.11.pred <-predict(WFD.occu.11,type="state",newdata=new.dat,appendData=TRUE)
+head(WFD.occu.11.pred)
+wet.mean<- attr(siteCovs(WFD.UMF)$wet,"scaled:center")
+wet.sd <- attr(siteCovs(WFD.UMF)$wet,"scaled:scale")
+WFD.occu.11.pred$wet <- WFD.occu.11.pred$wet*sd(WFD.siteCovs$wet)+mean(WFD.siteCovs$wet)
+plot(Predicted ~ wet, WFD.occu.11.pred,type="l",xlab="Proportion of bog and mire per 0.012 square km",
+     ylab="Probability of Occupancy",ylim=c(0,1), lwd = 3, cex.lab = 1.3, cex.axis = 1.2)
+lines(lower ~ wet, WFD.occu.11.pred,type="l",col="red", lty= 2)
+lines(upper ~ wet, WFD.occu.11.pred,type="l",col="red", lty = 2)
+
+new.dat<- data.frame(pineforest=seq(-0.5562 ,4.0627 ,,50),wet=0)
+WFD.occu.11.pred <-predict(WFD.occu.11,type="state",newdata=new.dat,appendData=TRUE)
+head(WFD.occu.11.pred)
+WFD.occu.11.pred$pineforest <- WFD.occu.11.pred$pineforest*sd(WFD.siteCovs$pineforest)+mean(WFD.siteCovs$pineforest)
+plot(Predicted ~ pineforest, WFD.occu.11.pred,type="l",xlab="Proportion of pine forest per 0.012 square km",
+     ylab="Probability of Occupancy",ylim=c(0,1), lwd = 3, cex.lab = 1.3, cex.axis = 1.2)
+lines(lower ~ pineforest, WFD.occu.11.pred,type="l",col="red", lty= 2)
+lines(upper ~ pineforest, WFD.occu.11.pred,type="l",col="red", lty= 2)
+
+new.dat<- data.frame(pineforest=seq(-0.5562 ,4.0627 ,,50),wet=-0.49035)
+WFD.occu.11.pred <-predict(WFD.occu.11,type="state",newdata=new.dat,appendData=TRUE)
+pred.wet <- data.frame(q1 = WFD.occu.11.pred$Predicted)
+new.dat<- data.frame(pineforest=seq(-0.5562 ,4.0627 ,,50),wet=-4.65173)
+WFD.occu.11.pred <-predict(WFD.occu.11,type="state",newdata=new.dat,appendData=TRUE)
+pred.wet$q3 <- WFD.occu.11.pred$Predicted
+new.dat<- data.frame(pineforest=seq(-0.5562 ,4.0627 ,,50),wet=-0)
+WFD.occu.11.pred <-predict(WFD.occu.11,type="state",newdata=new.dat,appendData=TRUE)
+WFD.occu.11.pred$pineforest <- WFD.occu.11.pred$pineforest*sd(WFD.siteCovs$pineforest)+mean(WFD.siteCovs$pineforest)
+pred.wet$med <- WFD.occu.11.pred$Predicted
+plot(pred.wet$med ~ WFD.occu.11.pred$pineforest, type="l",xlab="Proportion of pine forest per 0.012 square km",
+     ylab="Probability of Occupancy",ylim=c(0,1), lwd = 3, cex.lab = 1.3, cex.axis = 1.2)
+
+lines(pred.wet$q1 ~ WFD.occu.11.pred$pineforest,type="l",col="brown", lwd = 2)
+lines(pred.wet$q3 ~ WFD.occu.11.pred$pineforest,type="l",col="blue", lwd = 2)
+legend('topleft', col = c('black', 'brown', 'blue'), lwd = 3, legend = c("Mean", "Minimum", "Maximum"))
+
+new.dat<- data.frame(pineforest=-0.5562, wet = seq(-0.49035 ,4.65173,,50))
+WFD.occu.11.pred <-predict(WFD.occu.11,type="state",newdata=new.dat,appendData=TRUE)
+pred.wet <- data.frame(q1 = WFD.occu.11.pred$Predicted)
+new.dat<- data.frame(pineforest=4.0627, wet = seq(-0.49035 ,4.65173,,50))
+WFD.occu.11.pred <-predict(WFD.occu.11,type="state",newdata=new.dat,appendData=TRUE)
+pred.wet$q3 <- WFD.occu.11.pred$Predicted
+new.dat<- data.frame(pineforest=0, wet = seq(-0.49035 ,4.65173,,50))
+WFD.occu.11.pred <-predict(WFD.occu.11,type="state",newdata=new.dat,appendData=TRUE)
+WFD.occu.11.pred$wet <- WFD.occu.11.pred$wet*sd(WFD.siteCovs$wet)+mean(WFD.siteCovs$wet)
+pred.wet$med <- WFD.occu.11.pred$Predicted
+plot(WFD.occu.11.pred$Predicted ~ WFD.occu.11.pred$wet, type="l",xlab="Proportion of bog and mire per 0.012 square km",
+     ylab="Probability of Occupancy",ylim=c(0,1), lwd = 3, cex.lab = 1.3, cex.axis = 1.2)
+lines(pred.wet$q1 ~ WFD.occu.11.pred$wet,type="l",col="brown", lwd = 2)
+lines(pred.wet$q3 ~ WFD.occu.11.pred$wet,type="l",col="blue", lwd = 2)
+legend('right', col = c('black', 'brown', 'blue'), lwd = 3, legend = c("Mean", "Minimum", "Maximum"), title= "Pine forest")
+```
+
+
+
+<<<<<<< Updated upstream
+=======
+```{r modVal}
+#We first need to create a function for performing a Chi-Square test
+auc <- function(fm) {
+umf <- getData(fm)
+y <- getY(umf)
+y[y>1] <- 1
+fv <- fitted(fm, na.rm=TRUE) 
+y[is.na(fv)] <- NA 
+mv <- wilcox.test(y,fv)
+auc <- as.numeric(mv$statistic) / (length(y) * length(fv))
+auc
+}
+pb <- parboot(WFD.occu.11, statistic=chisq, nsim=100, parallel=FALSE) 
+pb
+
+
+```
+>>>>>>> Stashed changes
+
+
+## Predicted distribution
+
+<!------------------ One of use needs to add a bit of a description here ---------------->
+
+```{r predMap}
+### Load Scottish GIS Data
+bogs <- raster('Data/GIS Data/EnvVars_pred/bogs.img')
+bogwoodland <- raster('Data/GIS Data/EnvVars_pred/bogwoodland.img')
+mire <- raster('Data/GIS Data/EnvVars_pred/mire.img')
+pineforest <- raster('Data/GIS Data/EnvVars_pred/pineforest.img')
+
+### Create 'wet' variable
+wet <- bogs + mire + bogwoodland
+# EnvVars.pred <- stack(pineforest, wet)
+# names(EnvVars.pred) <- c("pineforest", "wet")
+EnvVars.pred <- stack(pineforest, wet)
+names(EnvVars.pred) <- c("pineforest", "wet")
+
+
+### Try projection of peat and forest model
+WFD.map.pred <- predict(WFD.occu.11, type = "state", newdata = EnvVars.pred, appendData = TRUE)
+
+plot(WFD.map.pred)
+```
+
+Discussion
+------------
+
+## Model results
+
+Our models suggest that the strongest drivers of White-faced darter distribution are increasing proportions of pine forest and 'wet' habitat such as bogs and mires. These results provide quantitative support for the current descriptions of White-faced darter habitat [REF] and also agree with local-scale descriptions of habitat associations [REF]. Our maps of predicted distribution predict strongly in several core areas for White-faced darter such as Abernethy forest and Glen Affric. However, in other areas our predictions are less successful. In fact, we miss one well know location entirely and are unable to successfully predict the population found at Monadh Mor on the Black Isle. Our models also only consider pine forest and do not include the birch forests suggested by several sources [REF]. We see this as a limitation of our model rather than an indication that these are not important [REF]. More successfully, our models predict a high probability of White-faced darter presence in areas which the species was not found until very recently, locations not included in our data (e.g. <!----- Check darter magazine ------->.
+
+## Areas for survey or protection
+hotspots
+
+Despite these limitations we suggest that the predictions of our model can be useful in conservation planning for White-faced darter. They successfully predict several important locations which are currently known along with strong predictions in areas that are under recorded or have not been surveyed. 
+
+## Model evaluation
+scale
+survey bias
+
+## Use of method and surrogate species
+
+One aspect of our modelling  approach which is relatively novel is the use of a surrogate species to imply 'absence' records. Species monitoring programmes do not always require absence records as a matter of course, however, several schemes use complete lists to record species absence [REF]. Our method is an extension of this approach in that we chose a widespread and highly detectable [REF] species whose presence records would provide information about visits to sites. In our case, as White-faced darter are relatively scare we could be confident that those recorders able to recognise Four-spotted chaser would be likely to submit records of White-faced darter were they to be present. However, our method is not without it's limitations. In this case our estimate of detectability is likely to be relative to our surrogate species rather than a true estimate of detectability for White-faced darter. Additionally our absence records are may be biased towards certain aquatic habitats and our predictions may be generous in some areas <!-------- Not the right phrase - can't think of the right one just now --------->
+
+In general, however, the use of occupancy models to investigate habitat suitability and population changes in Odonata is easily achievable with current recording data, providing data are available for suitable surrogate species. With a minor modification to current recording practices to encourage the use of complete lists (cf BirdTrack [REF]) more accurate estimates would be possible. 
+
+## Conservation implications for WFD
+
+Our models are in agreement with the current management recommendations for this species [REF] and emphasise the importance of lowland peat pool complexes within woodland. Our models particularly identify pinewood and suggest that native pinewoods may be particularly important although current management practices also suggest that some broadleaved species would be equally beneficial [REF]. Indeed these species are usually those found in edge habitats as part of native Caledonian pinewood [REF]. In terms of management, our models suggest that the maintenance of pool complexes within woodland is the most important objective. Our models predict that where woodland cover is high, the proportion of 'wet' habitat can be relatively small but without the forest cover even large areas of 'wet' habitat may not be suitable. This also suggest that White-faced darter are likely to be impacted by drainage as part of woodland management and this should eb avoided where this species is present. This aslo adds support to current management operations as part of the White-faced darter reintroduction project in Delamere forest, England where areas are being re-wetted to provide more suitable habitat for the reintroduced population [REF - Meredith BDS].
+
+## Potential future work
+other odonata
+
+Wide-scale monitoring and recording of odonata is still in its infancy compared to other taxa. Currently the distributions of many species, even in well recorded parts of the world, are known geographically but the ecological drivers of those distributions are less well understood. Our model demonstrates that investigating the distributions is possible even with current monitoring data. Indeed a useful next step would be to extend this modelling approach to include further species of conservation concern. The Scottish highlands is home to several other Odonata species which, along with White-faced darter, are under-recorded and potentially threatened by land use change [REF]. Adapting the models used in our analysis to include multiple species could benefit conservation planning for Odonata by identifying 'hotspots' for these specialists. 
+
+Our models used all records of White-faced darter which included larval records, exuvia counts and adult sightings. These three different record types are likely to have different detectabilities [REF] and, in fact, represent different levels of information about White-faced darter populations. Not all locations where adults are seen are suitable for the full reproductive cycle of Odonata [REF] and records fo larvae or exuvia are required to truly demonstrate successful breeding [REF]. An extension of our method which could sue this information to make more accurate estimates of White-faced darter distributions would be to use mutli-stage models of occupancy [REF] which could use adult presence and confirmed breeding as separate outcomes within the model. However, current recording of Odonata within the Scottish highlands does not represent enough information to fully parameterise such a model. For this to be successful we would need to increase the number of repeat visits to sites and particular increase the number of repeats which sought larvae or exuvia rather than just adults [REF]. 
+
+# Changes in occupancy 
+
+# COnnectivity and population structure
+
+
+
+
+## Conclusions
