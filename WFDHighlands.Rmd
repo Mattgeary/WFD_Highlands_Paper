@@ -21,6 +21,7 @@ knitr::opts_chunk$set(echo = FALSE, message = FALSE)
 library(unmarked)
 library(raster)
 library(AICcmodavg)
+library(MuMIn)
 ```
 
 # Main message: WHITE-FACED DARTER OCCUPANCY IS POSITIVELY RELATED TO THE PRESENCE OF WET FOREST HABITATS. THEY ARE LIKELY TO OCCUPY MORE HABITAT WITHIN THE SCOTTISH HIGHLANDS THAN IS CURRENTLY RECORDED. 
@@ -214,7 +215,11 @@ WFD.site.fits <- fitList(WFD.occu.1, WFD.occu.2, WFD.occu.3, WFD.occu.4, WFD.occ
 WFD.modSel <- modSel(WFD.site.fits)
 WFD.modSel
 
-#### Quadratic for tree variable or 'wet' variable does not improve model
+WFD.occu.full <- occu(~AWI+wildness+wind+tas ~coniferpine*pineforest*bogs*wet + pet_emerge, WFD.UMF)
+
+d1 <- dredge(WFD.occu.full, rank = AIC)
+
+  #### Quadratic for tree variable or 'wet' variable does not improve model
 ```
 
 Results

@@ -1,0 +1,307 @@
+---
+title: "BI5135 Module handbook"
+author: "Achaz von Hardenberg"
+date: "28/09/2018"
+output: pdf_document
+---
+
+Department of Biological Sciences
+=================================
+
+**BI5135**
+
+**Population Biology & Conservation**
+
+**STUDENT HANDBOOK**
+
+2018-2019
+=========
+___
+
+Introduction
+============
+
+The study of populations of organisms is a key component of conservation
+biology. Population biology focuses on population growth rates and the
+factors which influence them. Core to this is the use of simple mathematical
+models which 
+can help us to understand more complex situations in the natural world.
+This module will progress from simple single-species models through
+models of species interactions to spatial models and the application of
+population biology in conservation. The module can be split broadly into
+three components:
+
+1)  *Population biology theory*
+
+> Lectures concentrating on population models with increasing complexity
+> including population growth, metapopulation ecology and species
+> interactions.
+
+1)  *Ecological modeling practicals*
+
+> Computer practicals which build on the theory component of the course
+> allowing you to build your own ecological models.
+
+1)  *Applications of population biology*
+
+> Lectures which expand on the course content to include broader uses of
+> population biology in conservation. Topics include, 
+> parasites and disease in theoretical models and applications,
+> population viability analysis and the use of models to understand
+> population harvesting and management.
+
+The core content of the module will be delivered using lectures. These
+will be complemented with computer based practical classes and directed
+self-study time to prepare for the module assessment. Please see the
+module schedule below for details.
+
+**Teaching staff**
+
+                                      *Contact Details*
+  ----------------------------------- ---------------------------------  
+  **Dr Achaz von Hardenberg** (AvH)   <A.vonHardenberg@Chester.ac.uk>  
+  **Dr Matt Geary** (MG)              <M.Geary@Chester.ac.uk>
+  **Dr Simon Oliver** (SO)            <s.oliver@chester.ac.uk>
+  **Dr Anna Muir** (AM)               <A.Muir@Chester.ac.uk>
+
+**Module timetable**
+```{r table2, echo=FALSE, message=FALSE, warnings=FALSE, results='asis'}
+tabl <- "  # simple table creation here
+| Tables        | Are           | Cool  |
+|---------------|:-------------:|------:|
+| col 3 is      | right-aligned | $1600 |
+| col 2 is      | centered      |   $12 |
+| zebra stripes | are neat      |    $1 |
+"
+cat(tabl) # output the table in a format good for HTML/PDF/docx conversion
+```  
+**University week**|**Type of session**|**Length**|**Topic**|**Teaching Staff**    
+**10**|Lecture|1hr|Population Growth|MG  
+**10**|PC Workshop|2hr|Introduction to R|AvH  
+**11**|Maths Support|1hr|Algebra|AvH
+**11**|PC Workshop|2hr|Basic population models|MG
+**12**|Lecture|1hr|Population dynamics|MG  
+**12**|PC Workshop|2hr|Population dynamics|AvH  
+**13**|Maths Support|1hr|Basic Calculus|AvH  
+**13**|Seminar|2hr|Population dynamics in Conservation|MG  
+**14**|**PERSONAL DEVELOPMENT WEEK**|||
+**15**|Lecture|1hr|Age/Stage Structured populations|AvH  
+**15**|PC Workshop|2hr|Age/Stage Structured populations|AvH  
+**16**|Lecture|1hr|Metapopulation Ecology|AM  
+**16**|PC Workshop|Metapopulation Ecology|AvH  
+**17**|Maths Support|1hr|Matrix algebra|AvH  
+**18**|Lecture|1hr|Competition and Mutualism|SO  
+**18**|PC Workshop|2hr|Competition and Mutualism|MG  
+**19**|Maths Support|1hr|Topics so far|MG  
+**19**|2hr|Enemy-victim interactions|MG  
+**20**|Lecture|1hr|Predators and prey|SO  
+**21-23**|**CHRISTMAS HOLIDAY**|||  
+**24**|Lecture|1hr|Parasites and Disease|SO  
+**24**|PC Workshop|2hr|Parasites and disease|MG  
+**25**|Lecture1hr|PVA|SO  
+**25**|PC Workshop|2hr|PVA|AvH  
+**26**|Lecture|1hr|Intro to Population Genetics|AM
+**26**|Seminar|2hr|Population Genetics|AM  
+**27**|Lecture|1hr|Population Genetics and climate change|AM  
+**27**|Seminar|2hr|Population Genetics and climate change|AM  
+**28**|No session this week|||  
+**29**|No session this week|||  
+**30**|**PERSONAL DEVELOPMENT WEEK**|||  
+**31**|Lecture|1hr|How to write a scientific paper|MG      
+**31**|PC Workshop|2hr|Assessment support|MG    
+**32**|Lecture|1hr|Ecological Modelling|MG  
+**32**|PC Workshop|2hr|Assessment support|MG  
+**33**|No session this week|||  
+**34**|Seminar|2hr|Conservation Ecology|MG  
+**35**|No Session this week|||  
+**36**|No Session this week|||  
+**37- 39**|**EASTER HOLIDAY**|||  
+**40**|No Session this week||||
+**41**|No Session this week|||
+**42**|No Session|||
+   
+**Assessment**
+
+**Perform an investigation into the population biology of a species of
+conservation concern using ecological modelling methods.**
+
+**Deadline - 12/3/15**
+
+This module is assessed using 100% coursework. This consists of one
+piece of written work in the style of a journal article - a scientific
+report of an investigation into the population biology of a species of
+conservation concern using ecological modelling methods.
+
+Your first task is to choose a focal species for your project. You
+should make this decision through reading scientific literature to
+identify an appropriate species. Bear in mind that you will need to make
+some assumptions and, if necessary, some simplifications to model the
+species effectively. The species should be one which will lend itself to
+the use of ecological modelling with sufficient data to parameterise any
+models.
+
+You will be instructed in the methods of ecological modelling during the
+practical sessions in this course. In these sessions you will also have
+the chance to practice modelling methods using your focal species under
+the guidance of a member of staff.
+
+You should format your report in the style of a scientific journal
+article according to the following guidelines:
+
+The report should consist of the following sections:
+
+-   Abstract
+
+-   Introduction
+
+-   Materials and Methods
+
+-   Results
+
+-   Discussion
+
+-   References
+
+-   Appendix - Model Code
+
+You may also wish to include figures and table which should be embedded
+into the relevant sections.  Remember to support your ideas with
+references throughout the report. Each section of the report should
+contain specific information as follows,
+
+**Introduction**
+
+State the objectives of the work and provide an adequate background to
+justify and explain the study and study species. You should also include
+introductory paragraphs which explain the importance of population
+biology to conservation.
+
+**Material and methods**
+
+Provide sufficient detail to allow the work to be reproduced.
+
+**Results**
+
+This section should detail exactly what you found making use of tables
+and figures as appropriate. You should not discuss the context of your
+results here.
+
+**Discussion**
+
+This should explore the significance of the results of the work, not
+repeat them, and put them into a wider scientific context. Your
+discussion should finish with a paragraph or paragraphs which emphasise
+your main conclusions. Remember to make appropriate use of references
+here.
+
+**References**
+
+A list of references used in the report presented in alphabetical order
+of the last name of the first authors of the work.
+
+**Appendix**
+
+A file giving the code used to run the models in your report.
+
+**APA referencing should be used throughout in accordance with
+university guidelines.**
+
+***Assessment Criteria***
+
+Your work will be assessed according to the following criteria:
+
+-   Scientific accuracy of information
+
+-   Content of article sections described above
+
+-   Quality of the ecological modelling approach (i.e. appropriate
+    methods, data etc.)
+
+-   Quality of discussions and conclusions
+
+-   Appropriate use of references and reference formatting
+
+-   Adherence to assessment formatting instructions
+
+-   Presentation of tables and figures
+
+**Assessment submission**
+
+Both sections of the assessment should be submitted on **23/3/17**
+before 4:00 pm. In accordance with university policy all submissions
+will go through the Turnitin plagiarism detection software. Feedback on
+the assignments will be provided on or before **25/5/17**.
+
+Late assessed work will be penalised and the penalty incurred will be 10
+marks for work submitted up to 24 hours after a deadline and 10 marks
+per day after this, including weekends, e.g.:
+
+% mark awarded by tutor Penalty Mark %
+
+Work up to 24 hours late 65 55
+
+Work up to 48 hours late 65 45
+
+Work up to 72 hours late 65 35 and so on, to 0.
+
+**Coursework word count policy **
+
+The information below is a summary of the word count policy for
+coursework. Please refer to the notes of guidance for excess word count
+on the module space for full details.
+
+-   Permissible word count excludes the student’s name, title of module
+    and assignment, references to sources, bibliography, graphs, tables,
+    maps, diagrams, captions and appendices. These lie outside the
+    stated word limit.
+
+-   It is permissible to exceed the stated word limit by up to 10%,
+    without penalty. Thus, a 1000-word assignment is allowed to run to
+    1100 words, a 2000-word assignment to 2200 words, and so on.
+
+-   Assignments which exceed these limits are liable to be penalised by
+    the deduction of 5 marks per 1000 words excess (e.g. if a 1000-word
+    assignment, 5 marks off for 1101-2100 words, 10 marks off for
+    2101-3100 words, and so on).
+
+**\
+Suggested reading**
+
+The following is a list of texts which may be useful to your learning on
+this module. This list should not be considered exhaustive. Key
+references to papers and other research material will be provided in
+class and on Moodle
+
+**Key texts for the course are: **
+
+Begon, M., Harper, J. L. & Townsend, C. R. (2003). Essentials of
+ecology. Oxford, United Kingdom: Blackwell Scientific.
+
+Case, T. J. (1999). An Illustrated Guide to Theoretical Ecology. New
+York, NY: Oxford University Press, USA.
+
+Rockwood, L. L. (2009). Introduction to Population Ecology. New York,
+NY: Wiley.
+
+**The following papers will provide case studies of population biology
+in a conservation context:**
+
+Birkhead, T. R. (1977). The effect of habitat and density on breeding
+success in the common guillemot (Uria aalge). The Journal of Animal
+Ecology, 751–764.
+
+Crouse, D., Crowder, L. B. ., & Caswell, H. (1987). A stage-based
+population model for loggerhead sea turtles and implications for
+conservation. Ecology, 68(5), 1412–1423.
+
+**You may find the following journals useful for finding relevant
+information:**
+
+Ecological Modelling, (Journal available on-line from University of
+Chester library Web site).
+
+Population Ecology, (Journal available on-line from University of
+Chester library Web site).
+
+Trends in Ecology & Evolution, (Journal available on-line from
+University of Chester library Web site).
